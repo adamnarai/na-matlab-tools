@@ -1,9 +1,5 @@
 function end_script(p, OutPath)
 
-if nargin > 1
-    save_p(p, OutPath);
-end
-
 % Stop timer
 elapsedTime = toc;
 
@@ -26,3 +22,7 @@ fprintf(['\n------------------------------------',...
 diary off
 
 % Save p.mat
+if nargin > 1
+    save_p(p, OutPath);
+end
+

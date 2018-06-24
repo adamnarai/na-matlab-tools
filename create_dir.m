@@ -1,4 +1,4 @@
-function create_directory(NewDir)
+function create_dir(NewDir)
 % Create non-existent directories based on full path
 %
 % INPUT:
