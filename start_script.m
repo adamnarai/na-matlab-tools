@@ -2,6 +2,9 @@ function p = start_script()
 clc
 tic
 
+% Add na-matlab-toolbox subfolders
+addpath(genpath(fileparts(mfilename('fullpath'))));
+
 % Get caller
 st = dbstack;
 try
