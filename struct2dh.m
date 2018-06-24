@@ -1,20 +1,20 @@
 function dh_struct = struct2dh(struct_array)
-% Conversion from structure array to data+header structure.
-% Data+header structure is a matlab structure with the fields 'data' and
-% 'header', where 'data' is a 2D matrix and 'header' is a cell array with
-% the column labels for 'data'. The labels in 'header' correspond to
-% structure array field names, and the 'data' row numbers correspond to
+% Conversion from structure array to data + header structure.
+% Data+header structure is a matlab structure with the fields D and
+% H, where D is a 2D matrix and H is a cell array with
+% the column labels for D. The labels in H correspond to
+% structure array field names, and the D row numbers correspond to
 % structure array indexing.
 %
 % INPUT:
 %           classic_struct = Structure array with fileds corresponding to
-%               dh_struct 'header' labels and indexing corresponding to
-%               'data' rows.
+%               dh_struct H labels and indexing corresponding to
+%               D rows.
 %
 % OUTPUT:
-%           dh_struct = Structure with 'data' field containing the
+%           dh_struct = Structure with D field containing the
 %               structura array data in 2D data matrix form  where rows
-%               correspond to structure array indexing and 'header' field
+%               correspond to structure array indexing and H field
 %               with structure array field names in a cell array.
 %
 % Adam Narai, RCNS HAS, 2018
@@ -42,5 +42,5 @@ for col = 1:colN
     end
 end
 
-dh_struct.data = data;
-dh_struct.header = header;
+dh_struct.D = data;
+dh_struct.H = header;

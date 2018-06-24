@@ -1,15 +1,15 @@
 function dh_struct = create_dh(data, header)
-% Creating data+header structure.
-% Data+header structure is a matlab structure with the fields 'data' and
-% 'header', where 'data' is a 2D matrix and 'header' is a cell array with
-% the column labels for 'data'.
+% Creating data + header structure.
+% Data+header structure is a matlab structure with the fields D and
+% H, where D is a 2D matrix and H is a cell array with
+% the column labels for D.
 %
 % INPUT:
 %           data = 2D data matrix
 %           header = cell array of column labels for data
 %
 % OUTPUT:
-%           dh_struct = Structure with fields 'data' and 'header'
+%           dh_struct = Structure with fields D and H
 %               containing the 2D data matrix and column labels
 %               respectively.
 %
@@ -26,5 +26,5 @@ if size(data,2) ~= numel(header)
     error('Number of columns in data must equal to header size.');
 end
 
-dh_struct.data = data;
-dh_struct.header = header;
+dh_struct.D = data;
+dh_struct.H = header;
