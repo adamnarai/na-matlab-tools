@@ -10,7 +10,7 @@ function idx_list = time2idx(time_list, ref_times)
 %
 % Adam Narai, RCNS HAS, 2019
 
-idx_list = [];
+idx_list = nan(size(time_list));
 for i = 1:length(time_list)
     [~, idx] = min(abs(ref_times-time_list(i)));
     idx_list(i) = idx;
