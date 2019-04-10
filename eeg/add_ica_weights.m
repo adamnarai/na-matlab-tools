@@ -2,11 +2,10 @@ function EEG = add_ica_weights(EEG, ica_weights)
 % ADD_ICA_WEIGHTS  Add ICA weights to EEGLAB structure.
 %
 % INPUTS:
-%           EEG = continuous EEGLAB data
-%           filter = structure array with 'num' and 'den' fields containing
-%           the filter coefficients
+%           EEG = EEGLAB data
+%           ica_weights = structure of ICA weights
 % OUTPUTS:
-%           EEG = modified EEGLAB data
+%           EEG = EEGLAB data with ICA weights
 %
 % Adam Narai, RCNS HAS, 2019
 %
