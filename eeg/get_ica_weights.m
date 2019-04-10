@@ -1,5 +1,5 @@
 function ica_weights = get_ica_weights(EEG)
-% ADD_ICA_WEIGHTS  Add ICA weights to EEGLAB structure.
+% GET_ICA_WEIGHTS  Add ICA weights to EEGLAB structure.
 %
 % INPUTS:
 %           EEG = EEGLAB data with ICA weights
