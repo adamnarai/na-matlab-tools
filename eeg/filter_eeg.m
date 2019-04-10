@@ -10,7 +10,7 @@ function EEG = filter_eeg(EEG, filter)
 % OUTPUTS:
 %           EEG = modified EEGLAB data
 %
-% Adam Narai, RCNS HAS, 2018
+% Adam Narai, RCNS HAS, 2019
 %
 
 % Convert EEG to double
