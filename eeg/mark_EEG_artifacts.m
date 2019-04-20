@@ -1,9 +1,11 @@
-function EEG = mark_EEG_artifacts(EEG, channels)
+function EEG = mark_EEG_artifacts(EEG, channels, specdata_path)
 % MARK_EEG_ARTIFACTS  Automatic EEGLAB artifact marking.
+% Specdata may be saved and reloaded to reduce computational time.
 %
 % INPUTS:
 %           EEG = epoched EEGLAB data
 %           channels = EEGLAB channels structure
+%           specdata_path = path to save/load specdata
 % OUTPUTS:
 %           EEG = EEGLAB data with reject info
 %
@@ -11,8 +13,17 @@ function EEG = mark_EEG_artifacts(EEG, channels)
 %
 
 % Defaults
-if nargin < 2
+if nargin < 2 || isempty(channels)
     channels = 1:EEG.nbchan;    % use all channels
+end
+if nargin < 3
+    specdata_path = [];
+end
+
+% Load specdata if already computed
+if ~isempty(specdata_path) && exist(specdata_path, 'file')
+    temp = load(specdata_path, 'specdata');
+    EEG.specdata = temp.specdata;
 end
 
 % Threshold
@@ -63,3 +74,9 @@ EEG = pop_rejspec(EEG,...
     'eegplotplotallrej', 1,...          % superpose with different colors
     'eegplotreject', 0);                % just label (don't reject)
 close   % Close plot opened by pop_rejspec
+
+% Save specdata
+if ~isempty(specdata_path) && ~exist(specdata_path, 'file')
+    specdata = EEG.specdata;
+    save(specdata_path, 'specdata');
+end
