@@ -15,6 +15,7 @@ function error = check_et_eeg_event_match(ETALL, EEGALL, et_start_event, et_end_
 %           error = 0 if no error found
 %
 % Adam Narai, RCNS HAS, 2019
+%
 
 % Params
 time_diff_th = 10;  % ET-EEG drift threshold

@@ -1,20 +1,23 @@
-function delete_files(FileNames)
-% Delete a list of files or directories
+function delete_files(file_names)
+% DELETE_FILES  Delete a list of files or directories.
 %
 % INPUT:
-%           FileNames = cell array of file/dir names or paths
+%           file_names = cell array of file/dir names or paths
 %
 % Adam Narai, RCNS HAS, 2018
+%
 
-if ~iscell(FileNames)
-    FileNames = cellstr(FileNames);
+% Handle string input
+if ~iscell(file_names)
+    file_names = cellstr(file_names);
 end
 
-for i = 1:numel(FileNames)
-    if isdir(FileNames{i})
-        rmdir(FileNames{i}, 's');
-    elseif exist(FileNames{i}, 'file')
-        delete(FileNames{i});
+% Loop for files/dirs
+for i = 1:numel(file_names)
+    if isdir(file_names{i})
+        rmdir(file_names{i}, 's');
+    elseif exist(file_names{i}, 'file')
+        delete(file_names{i});
     end
 end
 

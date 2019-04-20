@@ -1,17 +1,21 @@
-function create_dir(NewDir)
-% Create non-existent directories based on full path
+function create_dir(dir_path)
+% CREATE_DIR  Create non-existent directories based on full path.
+% If the directory already exists, this function does nothing.
 %
 % INPUT:
-%           NewPath = string or cell array of directory path(s) to create
+%           dir_path = string or cell array of directory path(s) to create
 %
 % Adam Narai, RCNS HAS, 2018
+%
 
-if ~iscell(NewDir)
-    NewDir = cellstr(NewDir);
+% Handle string input
+if ~iscell(dir_path)
+    dir_path = cellstr(dir_path);
 end
 
-for i = 1:numel(NewDir)
-    if ~isdir(NewDir{i})
-        mkdir(NewDir{i});
+% Loop for dirs
+for i = 1:numel(dir_path)
+    if ~isdir(dir_path{i})
+        mkdir(dir_path{i});
     end
 end

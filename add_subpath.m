@@ -1,23 +1,25 @@
-function add_subpath(SubDir, inclSub, WorkPath)
-% Add subdirectories to Matlab search path
+function add_subpath(sub_dir, incl_sub, work_path)
+% ADD_SUBPATH  Add subdirectories to Matlab search path.
 %
 % INPUT:
-%           SubDir = directory to add (relative to WorkPath)
-%           inclSub = 1: also add subdirectories
-%           WorkPath = main project path
+%           sub_dir = directory to add (relative to work_path)
+%           incl_sub = 0: add only sub_dir, 1: add subdirectories
+%           work_path = main project path
 %
 % Adam Narai, RCNS HAS, 2018
+%
 
+% Defaults
 if nargin < 3
-    WorkPath = get_work_path();
+    work_path = get_work_path();
 end
-
 if nargin < 2
-    inclSub = 0;
+    incl_sub = 0;
 end
 
-if inclSub
-    addpath(genpath([WorkPath, filesep, SubDir]));
+% Add directories
+if incl_sub
+    addpath(genpath([work_path, filesep, sub_dir]));
 else
-    addpath([WorkPath, filesep, SubDir]);
+    addpath([work_path, filesep, sub_dir]);
 end

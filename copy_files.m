@@ -1,16 +1,19 @@
-function copy_files(FileNames, Destination)
-% Copy a list of files or directories to a given folder
+function copy_files(file_names, dest_dir)
+% COPY_FILES  Copy a list of files or directories to a given folder.
 %
 % INPUT:
-%           FileNames = cell array of file/dir names or paths
-%           Destination = destination paths
+%           file_names = cell array or string of file/dir names
+%           dest_dir = destination directory
 %
 % Adam Narai, RCNS HAS, 2018
+%
 
-if ~iscell(FileNames)
-    FileNames = cellstr(FileNames);
+% Handle string input
+if ~iscell(file_names)
+    file_names = cellstr(file_names);
 end
 
-for i = 1:numel(FileNames)
-    copyfile(FileNames{i}, Destination);
+% Loop for files/dirs and copy
+for i = 1:numel(file_names)
+    copyfile(file_names{i}, dest_dir);
 end
