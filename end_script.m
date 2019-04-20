@@ -1,9 +1,9 @@
-function end_script(p, out_path)
+function end_script(p, out_dir)
 % END_SCRIPT  Call at the end of scripts paired to strat_script().
 %
 % INPUTS:
 %           p = params structure
-%           out_path = output path for saving p
+%           out_dir = output path for saving p
 %
 % Adam Narai, RCNS HAS, 2019
 %
@@ -32,6 +32,6 @@ diary off
 
 % Save p.mat
 if nargin > 1
-    save_p(p, out_path);
+    save_p(p, out_dir);
 end
 

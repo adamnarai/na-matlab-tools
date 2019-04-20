@@ -28,21 +28,23 @@ end
 % Create log path
 create_dir(log_dir);
 curr_time = now;
-log_file_name = ['log_', log_name, datestr(curr_time,'yy_mm_dd_HH_MM_SS'), '.txt'];
+log_file_name = ['log_', log_name, '_', datestr(curr_time,'yy_mm_dd_HH_MM_SS'), '.txt'];
 log_path = [log_dir, filesep, log_file_name];
 
 % Start loging
-diary(logPath); 
+diary(log_path); 
 diary on;
 
 % Write into log file
 disp(['Script running: ', char(10), which(log_name)]);
-disp(['Time: ', datestr(curr_time,'yyyy.mm.dd HH:MM:SS'), char(10)]);
+disp(['Time: ', datestr(curr_time,'yyyy-mm-dd HH:MM:SS'), char(10)]);
 
 % Save parameters
 p.script.file = which(log_name);
-p.log.file = logPath;
-p.startTime = datestr(curr_time,'yyyy.mm.dd HH:MM:SS');
-p.gitHash = get_git_hash(get_work_path());
-p.PC = getenv('computername');
-p.workPath = get_work_path();
+p.log.file = log_path;
+p.start_time = datestr(curr_time,'yyyy-mm-dd HH:MM:SS');
+p.env.user = getenv('username');
+p.env.pc = getenv('computername');
+p.env.git_hash = get_git_hash(get_work_path());
+p.env.sys = computer;
+p.work_path = get_work_path();
