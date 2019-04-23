@@ -1,7 +1,10 @@
-function p = start_script()
+function p = start_script(mode)
 % START_SCRIPT  Call at the begining of scripts.
 % Call end_script() at the end.
 %
+% INPUTS:
+%           mode = 'path': only adding na-matlab-toolbox subfolders
+%                  ''    : full script start (default) 
 % OUTPUTS:
 %           p = params structure
 %
@@ -9,14 +12,24 @@ function p = start_script()
 %
 % See also end_script(), start_log()
 
+% Defaults
+if nargin < 1
+    mode = '';
+end
+
+% Add na-matlab-toolbox subfolders
+addpath(genpath(fileparts(mfilename('fullpath'))));
+
+% Exit if only path needed
+if strcmp(mode, 'path')
+    return;
+end
+
 % Setup
 evalin('base', 'clear all');
 evalin('base', 'close all');
 clc
 tic
-
-% Add na-matlab-toolbox subfolders
-addpath(genpath(fileparts(mfilename('fullpath'))));
 
 % Get caller script name
 st = dbstack;
