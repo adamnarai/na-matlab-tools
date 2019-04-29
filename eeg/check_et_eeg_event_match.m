@@ -5,7 +5,7 @@ function error = check_et_eeg_event_match(ETALL, EEGALL, et_start_event, et_end_
 % The performed checks:
 % - ET stim start/end event index matching
 % - ET-EEG stim start event count matching
-% - ET-EEG stim start within run drift check (<10 ms)
+% - ET-EEG stim start within run drift check (<20 ms)
 %
 % INPUTS:
 %           p = paramater structure with event codes
@@ -18,7 +18,7 @@ function error = check_et_eeg_event_match(ETALL, EEGALL, et_start_event, et_end_
 %
 
 % Params
-time_diff_th = 10;  % ET-EEG drift threshold
+time_diff_th = 20;  % ET-EEG drift threshold
 
 % Loop for runs
 for n = 1:numel(ETALL)
