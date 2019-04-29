@@ -19,6 +19,11 @@ if nargin < 5
     table_name = 'data';
 end
 
+% Fix extension
+if ~strcmp(file_path(end-4:end), '.mat')
+    file_path = [file_path, '.mat'];
+end
+
 % Load or create file and table
 if exist(file_path, 'file')
     try
