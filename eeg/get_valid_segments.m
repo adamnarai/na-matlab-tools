@@ -1,6 +1,6 @@
 function [EEG, segments] = get_valid_segments(EEG, start_event, end_event, seg_length, incl_last)
 % GET_VALID_SEGMENTS  Find valid segments in EEG data.
-% This function is used before artifact rejection, start/end events mark
+% This function is used before artifact rejection. Start/end events mark
 % the stimulus presentation times from which fixed length segments are extracted.
 % Returns epoched EEG and segment timestamps in [ms].
 %

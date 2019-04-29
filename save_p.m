@@ -21,7 +21,7 @@ end
 try
     p.log.text = fileread(p.log.file);
 end
-p.outPath = out_path;
+p.out_path = out_path;
 
 % Keep previous p structs in old
 if exist(p_path, 'file')
