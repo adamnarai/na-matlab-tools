@@ -35,4 +35,5 @@ end
 p.history(idx).comment = comment;
 p.history(idx).date = datestr(now, 'yyyy-mm-dd HH:MM:SS');
 p.history(idx).username = getenv('username');
+p.history(idx).username = getenv('computername');
 p.history(idx).script = caller_script.name;
