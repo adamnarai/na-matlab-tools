@@ -20,7 +20,7 @@ if nargin < 5
 end
 
 % Fix extension
-if ~strcmp(file_path(end-4:end), '.mat')
+if ~strcmp(file_path(end-3:end), '.mat')
     file_path = [file_path, '.mat'];
 end
 
