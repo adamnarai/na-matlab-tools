@@ -24,7 +24,9 @@ end
 
 % Add a zero column for the reference channel
 if ~isempty(CSD_parameters.reference_label)
-    EEG.data = [EEG.data; zeros(1, size(EEG.data,2))];
+    eeg_size = size(EEG.data);
+    eeg_size(1) = 1;
+    EEG.data = [EEG.data; zeros(eeg_size)];
 end
 
 % Perform CSD transformation
