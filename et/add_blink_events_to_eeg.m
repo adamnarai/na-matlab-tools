@@ -39,9 +39,9 @@ for n = 1:numel(EEGALL)
             
             % Add blink event
             event_num = event_num + 1;
-            blink_events(event_num,:) = {'blink', abs_eeg_time_start, abs_eeg_time_end-abs_eeg_time_start, 'blink'};
+            blink_events(event_num,:) = {' blink_s', abs_eeg_time_start, abs_eeg_time_end-abs_eeg_time_start, ' blink_s'};
             event_num = event_num + 1;
-            blink_events(event_num,:) = {'blink_end', abs_eeg_time_end, 0, 'blink'};
+            blink_events(event_num,:) = {' blink_e', abs_eeg_time_end, 0, ' blink_e'};
         end
     end
     
