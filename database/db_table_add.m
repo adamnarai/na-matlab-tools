@@ -27,7 +27,7 @@ end
 % Load or create file and table
 if exist(file_path, 'file')
     try
-        db = load(file_path, table_name);
+        db = load(file_path);
         data = db.(table_name);
     catch
         disp(['Creating new table: ', table_name]);
@@ -51,5 +51,5 @@ end
 warning on
 
 % Save table
-eval([table_name, ' = data;']);
-save(file_path, table_name, '-append');
+db.(table_name) = data;
+save(file_path, '-struct', 'db');
