@@ -22,18 +22,15 @@ for i = 1:numel(artifact_epochs)
     trig_event_idx = find([artifact_epochs(i).eventlatency{:}] == 0);
     urevent_list(i) = artifact_epochs(i).eventurevent{trig_event_idx};
     eventtype_list{i} = artifact_epochs(i).eventtype{trig_event_idx};
-    if ~strcmp(EEG.event(ismember([EEG.event.urevent], urevent_list(i))).type, eventtype_list{i})
+    if ~strcmp(EEG.event(urevent_list(i)).type, eventtype_list{i})
         error(['Urevent ', num2str(urevent_list(i)), ' has no match found in the continuous EEG data.']);
     end
 end
 
-% Find urivent numbers in the continuous data
-event_idx_list = find(ismember([EEG.event.urevent], urevent_list));
-
 % Error if events not found
-if numel(artifact_epochs) ~= numel(event_idx_list)
+if numel(artifact_epochs) ~= numel(urevent_list)
     error('Not all urevents were found.');
 end
 
 % Remove artifact events
-EEG = pop_selectevent(EEG, 'omitevent', event_idx_list, 'deleteevents', 'on');
+EEG = pop_selectevent(EEG, 'omitevent', urevent_list, 'deleteevents', 'on');
