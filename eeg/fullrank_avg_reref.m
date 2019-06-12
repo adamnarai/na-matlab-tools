@@ -34,9 +34,9 @@ end
 chNum = numel(channels);
 
 if dim == 2        % 2D (continuous)
-   EEG.data(channels,:) = EEG.data(channels,:) - ones(chNum,1)*mean(EEG.data(channels,:), 1);
+   EEG.data(channels,:) = EEG.data(channels,:) - repmat(mean(EEG.data(channels,:), 1), chNum, 1);
 elseif dim == 3    % 3D (epoched)
-   EEG.data(channels,:,:) = EEG.data(channels,:,:) - ones(chNum,1)*mean(EEG.data(channels,:,:), 1);
+   EEG.data(channels,:,:) = EEG.data(channels,:,:) - repmat(mean(EEG.data(channels,:,:), 1), chNum, 1, 1);
 end
 
 % Remove ref Ch
