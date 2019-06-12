@@ -21,7 +21,9 @@ if nargin < 2
 end
 
 % Init
-locations = [];
+locations.left = [];
+locations.right = [];
+locations.center = [];
 centN = 1;
 latN = 1;
 
