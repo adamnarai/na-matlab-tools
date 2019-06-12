@@ -38,7 +38,7 @@ else
     create_dir(fileparts(file_path));
     data = table();
     eval([table_name, ' = data;']);
-    save(file_path, table_name, '-v7.3');
+    save(file_path, table_name);
 end
 
 % Add data
