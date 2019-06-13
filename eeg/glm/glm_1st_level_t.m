@@ -1,9 +1,27 @@
-function cfg = glm_1st_level_t(cfg, EEG, cat, cont, cov)
+function glm_1st_level_t(cfg, EEG, cat, cont)
+% GLM_1ST_LEVEL_T  Space-time domain 1st level LIMO GLM.
+%
+% INPUT:
+%           cfg = config structure
+%           EEG = EEGLAB structure
+%           cat = Nx1 vector with categorical variables in one column
+%           cont = matrix with continuous variables in columns
+%
+%   cfg fields:
+%       cfg.out_dir: full path of output directory
+%       cfg.model: 1st level glm model (0: AVG, 1: GLM, 2: regr out)
+%       cfg.mode: data mode (0: FRA, 1: LI, 2: Lat)
+%       cfg.valid_trials: valid EEG trials (typically based on covariate
+%               filtering)
+%       cfg.baseline_mode: ''/none, rm_t_med, abs_div_t_med, rm_tri_avg_abs
+%       cfg.cond_list: numeric vector of condition numbers (first col in cat)
+%       cfg.movmean_time: movemean time in ms ([] and 0 means no movemean)
+%
+% Adam Narai, RCNS HAS, 2019
+%
 
-% Get chanlocs
+% Get chanlocs and create out dir
 chanlocs = EEG.chanlocs;
-
-% Create dir
 create_dir(cfg.out_dir);
 
 % Create chanlocs for lateralization
@@ -20,12 +38,6 @@ end
 if ~isempty(cont)
     cont = cont(cfg.valid_trials,:);
 end
-if ~isempty(cov)
-    cov = cov(cfg.valid_trials, :);
-end
-cont = [cont, cov];
-
-
 
 %% Preproc
 % Baseline (used for alpha)
@@ -39,7 +51,7 @@ switch cfg.baseline_mode
         sub_med = nanmedian(Y,2);
         Y = Y./repmat(sub_med, [1 EEG.pnts 1]);
     case 'rm_tri_avg_abs'   % cond avg removed + abs (induced power)
-        for cond = cfg.condList
+        for cond = cfg.cond_list
             cond_avg = mean(Y(:,:,condNums == cond),3);
             Y(:,:,condNums == cond) =...
                 Y(:,:,condNums == cond) - repmat(cond_avg, [1 1 sum(condNums == cond)]);
@@ -71,12 +83,24 @@ end
 
 %% EEG modeling
 if cfg.model == 0         % Average
-    create_dir(analysis_path);
-    cat = fix_nfo(subjIdx).spacing(validIdx);
     for cond = unique(cat)'
         Betas(:,:,cond) = mean(Y(:,:,cat == cond), 3);
     end
-    save([analysis_path, filesep, 'Betas.mat'], 'Betas');
+    save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
+    
+    % Save params in LIMO struct for 2nd level
+    LIMO.data.chanlocs            = chanlocs;
+    LIMO.data.sampling_rate       = EEG.srate;
+    LIMO.data.timevect            = EEG.times;
+    LIMO.data.trim1               = 1;
+    LIMO.data.trim2               = length(EEG.times);
+    LIMO.data.start               = EEG.times(1);
+    LIMO.data.end                 = EEG.times(end);
+    LIMO.dir                      = cfg.out_dir;
+    LIMO.Type                     = 'Channels';
+    LIMO.Level                    = 1;
+    LIMO.Analysis                 = 'Time average';
+    save([cfg.out_dir, filesep, 'LIMO.mat'], 'LIMO');
 elseif cfg.model == 1     % GLM
     LIMO.data.data_dir            = 'not defined';
     LIMO.data.data                = 'not defined';
@@ -103,7 +127,6 @@ elseif cfg.model == 1     % GLM
     
     run_limo_1st_level(LIMO, Y);
 elseif cfg.model == 2     % Residuals of covariate regression
-    create_dir(analysis_path);
     Res = nan(size(Y));
     X = [zscore(cont) ones(size(cont,1),1)];
     X_res = [zscore(cont) zeros(size(cont,1),1)];
@@ -113,7 +136,21 @@ elseif cfg.model == 2     % Residuals of covariate regression
         end
     end
     Betas = mean(Res, 3);
-    save([analysis_path, filesep, 'Betas.mat'], 'Betas');
+    save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
+    
+    % Save params in LIMO struct for 2nd level
+    LIMO.data.chanlocs            = chanlocs;
+    LIMO.data.sampling_rate       = EEG.srate;
+    LIMO.data.timevect            = EEG.times;
+    LIMO.data.trim1               = 1;
+    LIMO.data.trim2               = length(EEG.times);
+    LIMO.data.start               = EEG.times(1);
+    LIMO.data.end                 = EEG.times(end);
+    LIMO.dir                      = cfg.out_dir;
+    LIMO.Type                     = 'Channels';
+    LIMO.Level                    = 1;
+    LIMO.Analysis                 = 'Time, manual regr out';
+    save([cfg.out_dir, filesep, 'LIMO.mat'], 'LIMO');
 else
     error('Invalid model number');
 end
