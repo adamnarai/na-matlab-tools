@@ -166,7 +166,6 @@ elseif cfg.model == 4
 else
     error('Invalid model number');
 end
-end_script();
 
 function one_sample_t(LIMO, Yr, varNum)
 cd(LIMO.dir);
