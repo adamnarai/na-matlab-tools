@@ -1,4 +1,22 @@
 function valid_trials = filter_covariates(cfg, covariates)
+% FILTER_COVARIATES  Filter covariates based on NaN values, sacc direction 
+% and max sacc amplitude.
+%
+% INPUT:
+%           cfg = config structure
+%           covariates = table of covariates for each EEG trial
+% OUTPUT:
+%           valid_trials = logical vector marking valid trials
+%
+%   cfg fields:
+%       cfg.cov_names: covariate names
+%       cfg.exclude_nan: exclude trials with any NaN covariate
+%       cfg.curr_sacc_dir: current sacc direction (1: forward, 0: backward)
+%       cfg.next_sacc_dir: next sacc direction (1: forward, 0: backward)
+%       cfg.sacc_amp_limit: max sacc amp in vis deg ([] means no max)
+%
+% Adam Narai, RCNS HAS, 2019
+%
 
 % Check if only EEG trials are present
 if ~all(covariates.eeg_trial)
