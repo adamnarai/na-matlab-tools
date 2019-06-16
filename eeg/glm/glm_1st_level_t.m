@@ -31,12 +31,12 @@ if cfg.mode == 1 || cfg.mode == 2
 end
 
 % Filter trials
-Y = EEG.data(:,:,cfg.valid_trials);
+Y = EEG.data(:,:,logical(cfg.valid_trials));
 if ~isempty(Cat)
-    Cat = Cat(cfg.valid_trials,:);
+    Cat = Cat(logical(cfg.valid_trials),:);
 end
 if ~isempty(Cont)
-    Cont = Cont(cfg.valid_trials,:);
+    Cont = Cont(logical(cfg.valid_trials),:);
 end
 
 %% Preproc
