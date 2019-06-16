@@ -1,4 +1,4 @@
-function glm_1st_level_t(cfg, EEG, cat, cont)
+function glm_1st_level_t(cfg, EEG, Cat, Cont)
 % GLM_1ST_LEVEL_T  Space-time domain 1st level LIMO GLM.
 %
 % INPUT:
@@ -32,11 +32,11 @@ end
 
 % Filter trials
 Y = EEG.data(:,:,cfg.valid_trials);
-if ~isempty(cat)
-    cat = cat(cfg.valid_trials,:);
+if ~isempty(Cat)
+    Cat = Cat(cfg.valid_trials,:);
 end
-if ~isempty(cont)
-    cont = cont(cfg.valid_trials,:);
+if ~isempty(Cont)
+    Cont = Cont(cfg.valid_trials,:);
 end
 
 %% Preproc
@@ -83,8 +83,8 @@ end
 
 %% EEG modeling
 if cfg.model == 0         % Average
-    for cond = unique(cat)'
-        Betas(:,:,cond) = mean(Y(:,:,cat == cond), 3);
+    for cond = unique(Cat)'
+        Betas(:,:,cond) = mean(Y(:,:,Cat == cond), 3);
     end
     save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
     
@@ -106,8 +106,8 @@ elseif cfg.model == 1     % GLM
     LIMO.data.data                = 'not defined';
     LIMO.data.chanlocs            = chanlocs;
     LIMO.data.sampling_rate       = EEG.srate;
-    LIMO.data.Cat                 = cat;
-    LIMO.data.Cont                = cont;
+    LIMO.data.Cat                 = Cat;
+    LIMO.data.Cont                = Cont;
     LIMO.data.timevect            = EEG.times;
     LIMO.data.trim1               = 1;
     LIMO.data.trim2               = length(EEG.times);
@@ -128,8 +128,8 @@ elseif cfg.model == 1     % GLM
     run_limo_1st_level(LIMO, Y);
 elseif cfg.model == 2     % Residuals of covariate regression
     Res = nan(size(Y));
-    X = [zscore(cont) ones(size(cont,1),1)];
-    X_res = [zscore(cont) zeros(size(cont,1),1)];
+    X = [zscore(Cont) ones(size(Cont,1),1)];
+    X_res = [zscore(Cont) zeros(size(Cont,1),1)];
     for e = 1:size(Y,1)
         for t = 1:size(Y,2)
             Res(e,t,:) = squeeze(Y(e,t,:)) - X_res*regress(squeeze(Y(e,t,:)), X);
