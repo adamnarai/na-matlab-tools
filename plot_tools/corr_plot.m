@@ -57,7 +57,7 @@ scatter(ax, X_outl, Y_outl, 30, 'r', 'filled');
 hold off
 
 % Label outliers
-if ~isempty(label_list_outl)
+if ~isempty(label_list) && ~isempty(label_list_outl)
     for i = 1:numel(X_outl)
         text(ax, double(X_outl(i)), double(Y_outl(i)), ['  ', num2str(label_list_outl{i})]);
     end
