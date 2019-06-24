@@ -57,3 +57,9 @@ if ~isempty(cfg.sacc_amp_limit)
     sacc_amp_idx = cellfun(@(x) ~isempty(regexp(x, '_sacc_amp$', 'once')), cfg.cov_names);
     valid_trials(any((covariates{:,cfg.cov_names(sacc_amp_idx)} > cfg.sacc_amp_limit), 2)) = false;
 end
+
+% Limit X position
+if isfield(cfg, 'fix_pos_x_limit') && (numel(cfg.fix_pos_x_limit) == 2)
+    condtition = covariates.curr_fix_pos_x > cfg.fix_pos_x_limit(1) & covariates.curr_fix_pos_x <= cfg.fix_pos_x_limit(2);
+    valid_trials(~condtition) = false;
+end
