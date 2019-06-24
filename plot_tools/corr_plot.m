@@ -30,6 +30,12 @@ end
 fig = figure('position', [100 100 cfg.figsize]);
 ax = axes();
 
+% Get axis limits
+x_margin = (max(X)-min(X))*0.05;
+y_margin = (max(Y)-min(Y))*0.05;
+x_lim = [min(X)-x_margin, max(X)+x_margin];
+y_lim = [min(Y)-y_margin, max(Y)+y_margin];
+
 % Remove outliers
 X_outl = X(outliers);
 Y_outl = Y(outliers);
@@ -81,6 +87,10 @@ if cfg.vline
         line(ax, [0 0], ax.YLim, 'linestyle', ':', 'color', 'k');
     end
 end
+
+% Axis limits
+xlim(x_lim);
+ylim(y_lim);
 
 % Save plot
 if ~isempty(cfg.save_path)
