@@ -4,8 +4,8 @@ function glm_1st_level_t(cfg, EEG, Cat, Cont)
 % INPUT:
 %           cfg = config structure
 %           EEG = EEGLAB structure
-%           cat = Nx1 vector with categorical variables in one column
-%           cont = matrix with continuous variables in columns
+%           Cat = Nx1 vector with categorical variables in one column
+%           Cont = matrix with continuous variables in columns
 %
 %   cfg fields:
 %       cfg.out_dir: full path of output directory
@@ -83,8 +83,12 @@ end
 
 %% EEG modeling
 if cfg.model == 0         % Average
-    for cond = unique(Cat)'
-        Betas(:,:,cond) = mean(Y(:,:,Cat == cond), 3);
+    if ~isempty(Cat)
+        for cond = unique(Cat)'
+            Betas(:,:,cond) = mean(Y(:,:,Cat == cond), 3);
+        end
+    else
+        Betas = mean(Y, 3);
     end
     save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
     
