@@ -18,8 +18,6 @@ locations_li = pair_channels(chanlocs_li, 0.1);
 % Create NaN EEG
 eeg_out = NaN(numel(chanlocs_li), size(eeg,2));
 
-
-
 % Add right channels
 eeg_out(sort(locations_li.right),:) = eeg;
 
