@@ -20,15 +20,14 @@ end
 % Add na-matlab-toolbox subfolders
 addpath(genpath(fileparts(mfilename('fullpath'))));
 
-% Exit if only path needed
-if strcmp(mode, 'path')
-    return;
+% Setup
+if strcmp(mode, '')
+    evalin('base', 'clear all');
+    evalin('base', 'close all');
+    clc
 end
 
-% Setup
-evalin('base', 'clear all');
-evalin('base', 'close all');
-clc
+% Start timer
 tic
 
 % Get caller script name
