@@ -13,7 +13,8 @@ function valid_trials = filter_covariates(cfg, covariates)
 %       cfg.exclude_nan: exclude trials with any NaN covariate
 %       cfg.curr_sacc_dir: current sacc direction (1: forward, 0: backward)
 %       cfg.next_sacc_dir: next sacc direction (1: forward, 0: backward)
-%       cfg.sacc_amp_limit: max sacc amp in vis deg ([] means no max)
+%       cfg.max_sacc_amp: max sacc amp in vis deg ([] means no max)
+%       cfg.min_sacc_amp: min sacc amp in vis deg ([] means no min)
 %
 % Adam Narai, RCNS HAS, 2019
 %
@@ -53,9 +54,13 @@ if ~isempty(cfg.next_sacc_dir)
 end
 
 % Limit sacc amplitude
-if ~isempty(cfg.sacc_amp_limit)
+if ~isempty(cfg.max_sacc_amp)
     sacc_amp_idx = cellfun(@(x) ~isempty(regexp(x, '_sacc_amp$', 'once')), cfg.cov_names);
-    valid_trials(any((covariates{:,cfg.cov_names(sacc_amp_idx)} > cfg.sacc_amp_limit), 2)) = false;
+    valid_trials(any((covariates{:,cfg.cov_names(sacc_amp_idx)} > cfg.max_sacc_amp), 2)) = false;
+end
+if ~isempty(cfg.min_sacc_amp)
+    sacc_amp_idx = cellfun(@(x) ~isempty(regexp(x, '_sacc_amp$', 'once')), cfg.cov_names);
+    valid_trials(any((covariates{:,cfg.cov_names(sacc_amp_idx)} < cfg.min_sacc_amp), 2)) = false;
 end
 
 % Limit X position
