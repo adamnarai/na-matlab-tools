@@ -1,5 +1,5 @@
 %% Correlation function
-function corr_plot(cfg, X, Y, outliers)
+function ax = corr_plot(cfg, X, Y, outliers)
 
 % Defaults
 if nargin < 4
@@ -25,6 +25,9 @@ end
 if ~isfield(cfg, 'figsize')
     cfg.figsize = [560 420];
 end
+if ~isfield(cfg, 'lsline')
+    cfg.lsline = 1;
+end
 
 % Create figure and axes
 fig = figure('position', [100 100 cfg.figsize]);
@@ -42,11 +45,15 @@ Y_outl = Y(outliers);
 X(outliers) = [];
 Y(outliers) = [];
 
-% Scatterplot with OLS line
+% Scatterplot
 scatter(ax, X, Y, 30, 'b', 'filled');
-h1 = lsline(ax);
-h1.Color = 'k';
-h1.LineWidth = 2;
+
+% OLS line
+if cfg.lsline
+    h1 = lsline(ax);
+    h1.Color = 'k';
+    h1.LineWidth = 2;
+end
 
 % Mark values with subject codes
 if ~isempty(label_list)
