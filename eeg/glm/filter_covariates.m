@@ -21,7 +21,7 @@ function valid_trials = filter_covariates(cfg, covariates)
 %
 
 % Check if only EEG trials are present
-if ~all(covariates.eeg_trial)
+if ~all(covariates.eeg_trial) && ~cfg.allow_non_eeg_trial
     error('Not only EEG trials are present in covariates.');
 end
 
@@ -66,4 +66,20 @@ end
 if isfield(cfg, 'fix_pos_x_limit') && (numel(cfg.fix_pos_x_limit) == 2)
     condtition = covariates.curr_fix_pos_x > cfg.fix_pos_x_limit(1) & covariates.curr_fix_pos_x <= cfg.fix_pos_x_limit(2);
     valid_trials(~condtition) = false;
+end
+
+% Limit valid words
+if ~isempty(cfg.only_valid_words)
+    valid_trials(covariates{:,'valid_word'} == 0) = false;
+end
+
+% Limit curr sacc is gliss
+if ~isempty(cfg.curr_sacc_is_gliss)
+    valid_trials(covariates{:,'curr_sacc_is_gliss'} ~= cfg.curr_sacc_is_gliss) = false;
+end
+
+% Limit fixation rank
+if ~isempty(cfg.fix_rank_limits)
+    valid_trials((covariates{:,'fix_rank'} < cfg.fix_rank_limits(1)) |...
+        (covariates{:,'fix_rank'} > cfg.fix_rank_limits(2))) = false;
 end
