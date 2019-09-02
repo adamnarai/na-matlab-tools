@@ -139,6 +139,11 @@ elseif cfg.model == 2     % Residuals of covariate regression
             Res(e,t,:) = squeeze(Y(e,t,:)) - X_res*regress(squeeze(Y(e,t,:)), X);
         end
     end
+    % Save residuals (actually const+residuals)
+    if isfield(cfg, 'save_res') && cfg.save_res
+        save([cfg.out_dir, filesep, 'Res.mat'], 'Res');
+    end
+    
     Betas = mean(Res, 3);
     save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
     
