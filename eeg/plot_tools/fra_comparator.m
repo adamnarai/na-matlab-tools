@@ -7,6 +7,12 @@ function fra_comparator(data, cfg)
 % cfg.right_cluster = right_cluster;
 % cfg.subj_codes = subj_code_list;
 % cfg.times = p.times;
+% cfg.fig_name = '';
+
+% Defaults
+if ~isfield(cfg, 'fig_name')
+    cfg.fig_name = '';
+end
 
 % Get LI chanlocs
 locations = pair_channels(cfg.chanlocs, 0.1);
@@ -17,7 +23,7 @@ chanlocs_li(locations.center) = [];
 data_subj_idx = ismember(data.Properties.RowNames, cfg.subj_codes);
 
 % Create figure
-fig = figure('Position', [100 100 1000 800]);
+fig = figure('Position', [100 100 1000 800], 'Name', cfg.fig_name);
 ax_1 = subplot(4,1,1:3);
 if numel(cfg.var_name_list) == 2
     ax_2 = subplot(4,1,4);
