@@ -28,6 +28,9 @@ end
 if ~isfield(cfg, 'lsline')
     cfg.lsline = 1;
 end
+if ~isfield(cfg, 'gp_id')
+    cfg.gp_id = [];
+end
 
 % Create figure and axes
 fig = figure('position', [100 100 cfg.figsize]);
@@ -44,15 +47,34 @@ X_outl = X(outliers);
 Y_outl = Y(outliers);
 X(outliers) = [];
 Y(outliers) = [];
+if ~isempty(cfg.gp_id)
+    gp_id_outl = cfg.gp_id(outliers);
+    gp_id = cfg.gp_id;
+    gp_id(outliers) = [];
+end
 
 % Scatterplot
-scatter(ax, X, Y, 30, 'b', 'filled');
+if isempty(cfg.gp_id)
+    scatter(ax, X, Y, 40, 'k', 'filled');
+else
+    hold on
+    scatter(ax, X(gp_id == 1), Y(gp_id == 1), 40, [0 0.4470 0.7410], 'filled');
+    scatter(ax, X(gp_id == 2), Y(gp_id == 2), 40, [0.6350 0.0780 0.1840], 'filled');
+    hold off
+end
 
 % OLS line
 if cfg.lsline
-    h1 = lsline(ax);
-    h1.Color = 'k';
-    h1.LineWidth = 2;
+    if isempty(cfg.gp_id)   
+        h1 = lsline(ax);
+        h1.Color = [0.7, 0.7, 0.7];
+        h1.LineWidth = 2;
+    else
+        hold on
+        b = regress(Y', [ones(size(X')), X']);
+        plot(ax, xlim, xlim*b(2)+b(1), 'LineWidth', 2, 'Color', [0.7, 0.7, 0.7]);
+        hold off
+    end
 end
 
 % Mark values with subject codes
@@ -66,7 +88,12 @@ end
 
 % Plot outliers
 hold on
-scatter(ax, X_outl, Y_outl, 30, 'r', 'filled');
+if isempty(cfg.gp_id)
+    scatter(ax, X_outl, Y_outl, 40, 'k');
+else
+    scatter(ax, X_outl(gp_id_outl == 1), Y_outl(gp_id_outl == 1), 40, [0 0.4470 0.7410]);
+    scatter(ax, X_outl(gp_id_outl == 2), Y_outl(gp_id_outl == 2), 40, [0.6350 0.0780 0.1840]);
+end
 hold off
 
 % Label outliers
