@@ -28,8 +28,7 @@ elseif cfg.model == 1
         end
     end
 elseif cfg.model == 2
-    LIMO = set_limo_2nd_lvl_def(EEG, chanlocs, channeighbstructmat, cfg.model);
-    clear EEG
+    LIMO = set_limo_2nd_lvl_def(cfg);
     for var_num = cfg.covariates
         if isempty(cfg.contrast)
             Y{1} = squeeze(data{1}(:,:,var_num,:));
@@ -45,21 +44,20 @@ elseif cfg.model == 2
         save_p(cfg, LIMO.dir);
     end
 elseif cfg.model == 3
-    LIMO = set_limo_2nd_lvl_def(EEG, chanlocs, channeighbstructmat, cfg.model);
-    clear EEG
+    LIMO = set_limo_2nd_lvl_def(cfg);
     for gpcond = cfg.gpcond
         for var_num = cfg.covariates
             if isempty(cfg.contrast)
                 Y{gpcond} = squeeze(data{gpcond}(:,:,var_num,:));
                 LIMO.dir = [cfg.out_dir, filesep, cfg.gpcond_name{gpcond}, filesep,...
-                    cfg.var_names{var_num}, filesep, regressorName];
+                    cfg.var_names{var_num}, filesep, cfg.regressor_name];
             else
                 Y{gpcond} = squeeze(data{gpcond});
                 LIMO.dir = [cfg.out_dir, filesep, cfg.gpcond_name{gpcond}, filesep,...
-                    'contrast_', mat2str(cfg.contrast), filesep, regressorName];
+                    'contrast_', mat2str(cfg.contrast), filesep, cfg.regressor_name];
             end
             create_dir(LIMO.dir);
-            regression_t(LIMO, Y{gpcond}, Cont{gpcond}, var_num);
+            regression_t(LIMO, Y{gpcond}, cfg.regressor{gpcond}, var_num);
             save_p(cfg, LIMO.dir);
         end
     end
@@ -72,7 +70,7 @@ elseif cfg.model == 4
                 keep = cfg.regr_filter.values{gpcond} > cfg.regr_filter.lower &...
                     cfg.regr_filter.values{gpcond} < cfg.regr_filter.upper;
                 
-                Cont{gpcond}(~keep) = [];
+                cfg.regressor{gpcond}(~keep) = [];
                 if isempty(cfg.contrast)
                     data{gpcond}(:,:,:,~keep) = [];
                 else
@@ -103,11 +101,11 @@ elseif cfg.model == 4
             TimeEnd = cfg.trim_time(2);
             
             % Remove NaN samples
-            nanIdx = isnan(Cont{gpcond});
+            nanIdx = isnan(cfg.regressor{gpcond});
             nanIdx = sum(nanIdx, 2) > 0;
-            Cont{gpcond}(nanIdx,:) = [];
+            cfg.regressor{gpcond}(nanIdx,:) = [];
             Y{gpcond}(nanIdx,:) = [];
-            [r, ~, ~, outid, hboot, CI] = skipped_correlation(Cont{gpcond}, Y{gpcond}, 0);
+            [r, ~, ~, outid, hboot, CI] = skipped_correlation(cfg.regressor{gpcond}, Y{gpcond}, 0);
             
             R_P = r.Pearson;
             R_S = r.Spearman;
@@ -126,7 +124,7 @@ elseif cfg.model == 4
                 figNum = 1;
             end
             figName = {['scatter_', num2str(figNum)]};
-            subjNum = numel(Cont{gpcond});
+            subjNum = numel(cfg.regressor{gpcond});
             T = table(Group, Regressor, Channels, TimeStart, TimeEnd,...
                 R_P, CI_P1, CI_P2, h_P, R_S, CI_S1, CI_S2, h_S, outliers, figName, subjNum);
             
@@ -139,7 +137,7 @@ elseif cfg.model == 4
             end
             
             fig = figure(figNum);
-            scatter(Cont{gpcond}, Y{gpcond});
+            scatter(cfg.regressor{gpcond}, Y{gpcond});
             lsline
             savefig(fig, [ScatterDir, filesep, figName{1}]);
             close(fig);
