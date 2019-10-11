@@ -38,6 +38,9 @@ end
 if ~isempty(Cont)
     Cont = Cont(logical(cfg.valid_trials),:);
 end
+if isfield(cfg, 'split_res_var') && ~isempty(cfg.split_res_var)
+    cfg.split_res_var = cfg.split_res_var(logical(cfg.valid_trials));
+end
 
 %% Preproc
 % Baseline (used for alpha)
@@ -144,7 +147,15 @@ elseif cfg.model == 2     % Residuals of covariate regression
         save([cfg.out_dir, filesep, 'Res.mat'], 'Res');
     end
     
-    Betas = mean(Res, 3);
+    % Split Res based on fixrank
+    if isfield(cfg, 'split_res_var') && ~isempty(cfg.split_res_var)
+        Betas = [];
+        for v = unique(cfg.split_res_var)'
+            Betas(:,:,v) = mean(Res(:,:,cfg.split_res_var == v), 3);
+        end
+    else
+        Betas = mean(Res, 3);
+    end
     save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
     
     % Save params in LIMO struct for 2nd level
