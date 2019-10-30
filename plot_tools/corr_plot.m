@@ -60,6 +60,7 @@ else
     hold on
     scatter(ax, X(gp_id == 1), Y(gp_id == 1), 40, [0 0.4470 0.7410], 'filled');
     scatter(ax, X(gp_id == 2), Y(gp_id == 2), 40, [0.6350 0.0780 0.1840], 'filled');
+    scatter(ax, X(gp_id == 3), Y(gp_id == 3), 40, [0.4660 0.6740 0.1880], 'filled');
     hold off
 end
 
@@ -71,7 +72,7 @@ if cfg.lsline
         h1.LineWidth = 2;
     else
         hold on
-        b = regress(Y', [ones(size(X')), X']);
+        b = regress(Y, [ones(size(X)), X]);
         plot(ax, xlim, xlim*b(2)+b(1), 'LineWidth', 2, 'Color', [0.7, 0.7, 0.7]);
         hold off
     end
@@ -93,6 +94,7 @@ if isempty(cfg.gp_id)
 else
     scatter(ax, X_outl(gp_id_outl == 1), Y_outl(gp_id_outl == 1), 40, [0 0.4470 0.7410]);
     scatter(ax, X_outl(gp_id_outl == 2), Y_outl(gp_id_outl == 2), 40, [0.6350 0.0780 0.1840]);
+    scatter(ax, X_outl(gp_id_outl == 3), Y_outl(gp_id_outl == 3), 40, [0.4660 0.6740 0.1880]);
 end
 hold off
 
