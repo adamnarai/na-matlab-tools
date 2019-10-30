@@ -44,14 +44,18 @@ cluster_data = squeeze(mean(eeg(channel_idx, :), 1));
 
 % Iteratively larger time windows while min/max is on edge
 step = 0;
-while (step == 0 || ismember(idx, search_range_idx))
+while (step == 0 || isempty(idx) ||ismember(idx, search_range_idx))
     offset =  init_offset + step*step_size;
     % Error is offset max crossed
-    if any(offset >= offset_max)
-        latency = NaN;
+    if all(offset > offset_max)
+        latency = 0;
         return
     end
     
+    % Maximize offset (for assym case)
+    for i = numel(offset)
+        offset(i) = min(offset(i), offset_max);
+    end
     search_range_idx = time2idx([start_time-offset(1), start_time+offset(2)], times);
     if strcmp(type, 'min')
         [~, idx] = min(cluster_data(search_range_idx(1):search_range_idx(2)));
