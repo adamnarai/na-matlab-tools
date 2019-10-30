@@ -1,128 +1,79 @@
-% Plot space-time t/F values on horizontal plot
-% may need to run limo_eeg beforehand
-function mainfig = horizontal_limo_figures_with_topoplot()
-start_script();
-close all
+% Plot space-time t values on horizontal plot
+function mainfig = horizontal_limo_figures_with_topoplot(cfg)
 add_subpath('bin/external/othercolor');
+root = fileparts(which('limo_eeg'));
+addpath([root filesep 'limo_cluster_functions'])
+addpath([root filesep 'external'])
+addpath([root filesep 'external' filesep 'psom'])
+addpath([root filesep 'external' filesep 'othercolor'])
+addpath([root filesep 'help'])
 
-WorkPath = get_work_path();
-ResultsDir = [WorkPath, filesep, 'results'];
-GlmDir = [ResultsDir, filesep, 'GLM_lp_35'];
+work_path = get_work_path();
+glm_dir = [work_path, '/results/GLM_lp_35'];
 
-filepath{1} = [GlmDir, filesep, 'ANCOVA8_t_lp_35_saccamp_0_26_one_sample/contr/contrast_[-1 4 -1 -1 -1]'];
-filepath{2} = [GlmDir, filesep, 'ANCOVA8_t_lp_35_saccamp_0_26_one_sample/dys/contrast_[-1 4 -1 -1 -1]'];
-% 
-filepath{1} = [GlmDir, filesep, 'MLR8_t_lp_35_saccamp_0_26_one_sample/contr/spacing'];
-filepath{2} = [GlmDir, filesep, 'MLR8_t_lp_35_saccamp_0_26_one_sample/dys/spacing'];
-% filepath{2} = [GlmDir, filesep, 'MLR8_t_lp_35_none_two_samples/spacing'];
-% % %
-filepath{1} = [GlmDir, filesep, 'MLR8_2  3  4  5_t_lp_35_saccamp_0_26_one_sample/contr/spacing'];
-filepath{2} = [GlmDir, filesep, 'MLR8_2  3  4  5_t_lp_35_saccamp_0_26_one_sample/dys/spacing'];
-% % filepath{2} = [GlmDir, filesep, 'MLR8_2  3  4  5_t_lp_35_none_two_samples/spacing'];
-%
-% filepath{1} = [GlmDir, filesep, 'ANCOVA8_t_lp_35_none_one_sample/contr/contrast_[0 1 -1 0 0]'];
-% filepath{2} = [GlmDir, filesep, 'ANCOVA8_t_lp_35_none_one_sample/dys/contrast_[0 1 -1 0 0]'];
-%
-% filepath{1} = 'G:/EEG_results_save_181016/limo_time/2nd_level_results/original/ANCOVA7_orig/LIMO_2nd_lvl/contr';
-% filepath{2} = 'G:/EEG_results_save_181016/limo_time/2nd_level_results/original/MLR7_orig/LIMO_2nd_lvl/parameter_1';
+% Data
+cfg.filepath{1} = [glm_dir, filesep, 'ANCOVA8_t_lp_35_saccamp_0_26_one_sample/contr/contrast_[-1 4 -1 -1 -1]'];
+cfg.filepath{2} = [glm_dir, filesep, 'ANCOVA8_t_lp_35_saccamp_0_26_one_sample/dys/contrast_[-1 4 -1 -1 -1]'];
 
-% filepath{1} = [ResultsDir, filesep, 'GLM', filesep, 'ANCOVA8_tf_baseline_one_sample/contr/contrast_[-1 4 -1 -1 -1]'];
-% filepath{2} = [ResultsDir, filesep, 'GLM', filesep, 'ANCOVA8_tf_baseline_one_sample/dys/contrast_[-1 4 -1 -1 -1]'];
-%
-% filepath{1} = [ResultsDir, filesep, 'GLM', filesep, 'MLR8_tf_evoked_one_sample/O10PO10P10O2PO8P8PO4P6P4O9PO9P9O1PO7P7PO3P5P3/dys/spacing'];
-% filepath{2} = [ResultsDir, filesep, 'GLM', filesep, 'MLR8_tf_evoked_one_sample/O10PO10P10O2PO8P8PO4P6P4O9PO9P9O1PO7P7PO3P5P3/dys/spacing'];
-%
-% filepath{1} = 'G:\EEG_results_save_181016\limo_time\2nd_level_outl_results\MLR7_OLS_t_outl\parameter_1';
-% filepath{2} = 'G:\EEG_results_save_181016\limo_time\2nd_level_outl_results\MLR7_OLS_t_outl_pca\parameter_7';
-
-% filepath{1} = [GlmDir, filesep, 'ANCOVA9_t_allCurrSacc_lp_35_one_sample/contr/contrast_[-1 4 -1 -1 -1]'];
-% filepath{2} = [GlmDir, filesep, 'ANCOVA9_t_allCurrSacc_lp_35_one_sample/dys/contrast_[-1 4 -1 -1 -1]'];
-
-% filepath{1} = [GlmDir, filesep, 'ANCOVA9_t_allCurrSacc_lp_35_one_sample/contr/currSaccAngleCos'];
-% filepath{2} = [GlmDir, filesep, 'ANCOVA9_t_allCurrSacc_lp_35_one_sample/dys/currSaccAngleCos'];
-% filepath{2} = [GlmDir, filesep, 'ANCOVA9_t_allCurrSacc_lp_35_two_samples/currSaccAngleCos'];
-covParam = 1;
-
-titles{1} = 'Control';
-titles{2} = 'Dyslexic';
-
-trim = [100 400];
+% Space-time plot setup
+cfg.titles{1} = 'Control';
+cfg.titles{2} = 'Dyslexic';
+cfg.trim = [NaN NaN];
+cfg.trim = [100 400];
 correction = 3;
 correction_2 = 2;    % background, omitted if empty
 alpha = 0.3;
-endCh = 64;
-startCh = 1;
-oneSided = 0;
+start_ch = [];
+end_ch = [];
+one_sided = 0;
 zeroLine = 0;
 isBaseLine = 0;
 
-% ANCOVA contr vs dys
-trim = [100 400];
-Dirs = {filepath{1} filepath{1} filepath{2} filepath{2}};
+% Topoplot setup
+Dirs = {cfg.filepath{1} cfg.filepath{1} cfg.filepath{2} cfg.filepath{2}};
 topoTitles = {'' '' '' ''};
 timePoints = [135 250 135 250];
 
-% MLR contr vs dys
-trim = [170 210];
-Dirs = {filepath{1} filepath{1} filepath{2} filepath{2}};
-topoTitles = {'' '' '' ''};
-timePoints = [200 200 200 200];
-
-% MLR 2:5 contr vs dys
-trim = [100 400];
-Dirs = {filepath{1} filepath{1} filepath{2} filepath{2}};
-topoTitles = {'' '' '' ''};
-timePoints = [130 240 130 240];
-
+% Colormap
 colors = flipud(othercolor('RdBu11',100));
-if oneSided
+if one_sided
     colors = colors(1:size(colors,1)/2,:);
 end
 
-chsize = (endCh-startCh+1)/62;
 figwidth = 1400;
 widthratio = figwidth/1000;
 
 if isempty(correction_2)
-    typeList = 1;
+    mcc_type_list = 1;
 else
-    typeList = 1:2;
+    mcc_type_list = 1:2;
 end
-for type = typeList
-    for i = 1:2
-        nameStrings = {'one_sample_ttest_parameter_',...
-            'two_samples_ttest_parameter_', 'Covariate_effect_'};
-        
-        if ~isempty(trim)
-            trimStr = ['_', num2str(trim(1)), '_', num2str(trim(2))];
-            handles.start_time_val = trim(1);
-            handles.end_time_val = trim(2);
-        else
-            trimStr = '';
-            handles.start_time_val = NaN;
-            handles.end_time_val = NaN;
-        end
-        
-        handles.p = 0.05;
-        if type == 1
-            handles.MCC = correction;
-        elseif type == 2
-            handles.MCC = correction_2;
-        end
-        handles.bootstrap = 0;
-        handles.tfce = 0;
-        
-        fileList = dir(filepath{i});
+for mcc_type = mcc_type_list
+    handles.start_time_val = cfg.trim(1);
+    handles.end_time_val = cfg.trim(2);
+    handles.p = 0.05;
+%     handles.bootstrap = 0;
+%     handles.tfce = 0;
+    if mcc_type == 1
+        handles.MCC = correction;
+    elseif mcc_type == 2
+        handles.MCC = correction_2;
+    end
+    
+    name_str = {'one_sample_ttest_parameter_', 'two_samples_ttest_parameter_'};
+    for res_idx = 1:numel(cfg.filepath)
+        % Open limo plots and save to LIMO.cache
+        fileList = dir(cfg.filepath{res_idx});
         fileList = {fileList.name};
         for fileIdx = 1:numel(fileList)
-            FileName = fileList{fileIdx};
-            PathName = filepath{i};
+            stat_file_name = fileList{fileIdx};
+            stat_path_name = cfg.filepath{res_idx};
             
             found = 0;
-            for samp = 1:numel(nameStrings)
-                N = length(nameStrings{samp});
-                if length(FileName) >= N
-                    if strcmp(FileName(1:N), nameStrings{samp})
+            for samp = 1:numel(name_str)
+                N = length(name_str{samp});
+                if length(stat_file_name) >= N
+                    if strcmp(stat_file_name(1:N), name_str{samp})
                         found = 1;
                         break
                     end
@@ -130,62 +81,63 @@ for type = typeList
             end
             
             if found
-                handles.dir = PathName;
-                display_limo_fig(FileName, PathName, handles);
+                handles.dir = stat_path_name;
+                display_limo_fig(stat_file_name, stat_path_name, handles);
                 break
             end
         end
         
-        cd(filepath{i});
+        if ~found
+            error(['Stat file not found in ', stat_path_name]);
+        end
+        
+        % Get results data
+        cd(cfg.filepath{res_idx});
         load LIMO
-        LIMO.cache.fig.MCC
+        if ~isequal(LIMO.cache.fig.MCC, handles.MCC)
+            error(['Expected MCC type ', num2str(handles.MCC), ', found type ', num2str(LIMO.cache.fig.MCC)]);
+        end
         times = LIMO.data.times;
-        chanLabels = {LIMO.data.chanlocs.labels};
+        chan_labels = {LIMO.data.chanlocs.labels};
+        if isempty(start_ch)
+            start_ch = 1;
+        end
+        if isempty(end_ch)
+            end_ch = numel(chan_labels);
+        end
+        stats{res_idx} = LIMO.cache.fig.stats;
+        mask{res_idx} = LIMO.cache.fig.mask;
+        to_plot = stats{res_idx}.*mask{res_idx};
         
-        stats{i} = LIMO.cache.fig.stats;
-        mask{i} = LIMO.cache.fig.mask;
-        
-        figList{i}{type} = figure;
+        fig_list{res_idx}{mcc_type} = figure;
         pos = get(gcf, 'position');
         set(gcf, 'position', [pos(1) pos(2) figwidth 210]);
         
-        chans = startCh:endCh;
-        toPlot = stats{i}.*mask{i};
-        
-        image = imagesc([startCh endCh],[trim(1) trim(2)],toPlot');
+        % Plot
+        image = imagesc([start_ch end_ch],[cfg.trim(1) cfg.trim(2)],to_plot');
         set(gca,'YDir','normal')
-        if type == 1
+        if mcc_type == 1
             a = 1;
         else
             a = alpha;
         end
-        set(image,'AlphaData',a*mask{i}');
+        set(image,'AlphaData',a*mask{res_idx}');
         colormap(colors);
-        colorbar('location', 'manual', 'position', [.1/chsize+.93-.1/chsize+.008*widthratio .18 .012/widthratio .75],...
+        colorbar('location', 'manual', 'position', [.1+.93-.1+.008*widthratio .18 .012/widthratio .75],...
             'units', 'normalized', 'linewidth', 0.01);
         
-        maxvalue(i+(type-1)*2) = max(abs([min(toPlot(:)),max(toPlot(:))]));
+        maxvalue(res_idx+(mcc_type-1)*2) = max(abs([min(to_plot(:)),max(to_plot(:))]));
         
-        set(gca,'XTick', startCh:endCh);
-        set(gca,'XTickLabel', chanLabels(startCh:endCh));
+        set(gca,'XTick', start_ch:end_ch);
+        set(gca,'XTickLabel', chan_labels(start_ch:end_ch));
         set(gca,'TickLength',[0 1])
         
-        %     set(gca,'YAxisLocation','right');
-        
         ax = ancestor(image, 'axes');
-        %     xrule = ax.XAxis;
-        %     xrule.FontSize = 8;
         ax.XTickLabelRotation = 90;
         if zeroLine
-            line(get(ax,'XLim'),[0 0],'Color','k', 'LineStyle', '--')
+            line(get(ax,'XLim'),[0 0],'Color','k', 'LineStyle', '--');
         end
-        
-        %     title(titles{i});
-        if isBaseLine
-            ylabel('Frequency [Hz]');
-        else
-            ylabel('Time (ms)');
-        end
+        ylabel('Time (ms)');
         set(gca,'fontsize', 11);
     end
 end
@@ -202,13 +154,13 @@ row2Offset = .13;
 cBarWidth = 0.01;
 
 set(gcf, 'position', [pos(1) pos(2) figwidth 420]);
-for type = flip(typeList)
-    for i = 1:2
+for mcc_type = flip(mcc_type_list)
+    for res_idx = 1:2
         c = max(maxvalue);
-        ax = get(figList{i}{type},'children');
+        ax = get(fig_list{res_idx}{mcc_type},'children');
         caxis(ax(2), [-c c]);
         
-        ax = get(figList{i}{type},'children');
+        ax = get(fig_list{res_idx}{mcc_type},'children');
         copyobj(ax(2), mainfig);
     end
 end
@@ -228,12 +180,12 @@ colormap(mainfig, colors);
 colorbar(ax(1),'location', 'manual', 'position', [col1Offset+figWidth+cBarWidth row2Offset cBarWidth row1Offset+figHeight-row2Offset],...
     'units', 'normalized', 'linewidth', 0.01);
 
-text(ax(2), -0.09, 0.5, titles{1}, 'units', 'normalized', 'rotation', 90,...
+text(ax(2), -0.09, 0.5, cfg.titles{1}, 'units', 'normalized', 'rotation', 90,...
     'horizontalalignment', 'center', 'fontsize', 14, 'fontweight', 'bold');
-text(ax(1), -0.09, 0.5, titles{2}, 'units', 'normalized', 'rotation', 90,...
+text(ax(1), -0.09, 0.5, cfg.titles{2}, 'units', 'normalized', 'rotation', 90,...
     'horizontalalignment', 'center', 'fontsize', 14, 'fontweight', 'bold');
 
-if endCh == 62
+if end_ch == 62
     text(ax(1), 1.02, -0.13, 't', 'units', 'normalized', 'rotation', 0,...
         'horizontalalignment', 'center', 'fontsize', 12);
 else % endCh == 64
@@ -255,7 +207,7 @@ topoYdist = 0.45;
 
 for topoIdx = 1:4
     load([Dirs{topoIdx}, filesep, 'LIMO']);
-    load([Dirs{topoIdx}, filesep, 'one_sample_ttest_parameter_', num2str(covParam)]);
+    load([Dirs{topoIdx}, filesep, stat_file_name]);
     EEG.times = LIMO.data.times/1000;
     EEG.chanlocs = LIMO.data.chanlocs;
     EEG.data = squeeze(one_sample(:,:,4));  % t values
@@ -302,6 +254,7 @@ end
 function display_limo_fig(FileName, PathName, handles)
 cd(PathName); handles.LIMO = load('LIMO.mat');
 handles.LIMO.LIMO = trim_time(handles.LIMO.LIMO, handles.start_time_val, handles.end_time_val);
+handles.LIMO.LIMO.cache = [];
 limo_display_results(1,FileName,PathName,handles.p,handles.MCC,handles.LIMO.LIMO);
 
 function LIMO = trim_time(LIMO, start_time, end_time)
