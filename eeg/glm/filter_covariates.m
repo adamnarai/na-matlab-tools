@@ -86,7 +86,7 @@ if isfield(cfg, 'fix_pos_x_limit') && (numel(cfg.fix_pos_x_limit) == 2)
 end
 
 % Limit valid words
-if ~isempty(cfg.only_valid_words)
+if cfg.only_valid_words
     valid_words_idx = covariates{:,'valid_word'} == 0;
     valid_trials(valid_words_idx) = false;
 end

@@ -25,7 +25,7 @@ data_subj_idx = ismember(data.Properties.RowNames, cfg.subj_codes);
 % Create figure
 fig = figure('Position', [100 100 1000 800], 'Name', cfg.fig_name);
 ax_1 = subplot(4,1,1:3);
-if numel(cfg.var_name_list) == 2
+if numel(cfg.var_name_list) >= 2
     ax_2 = subplot(4,1,4);
 end
 color.b = [0.12, 0.38, 0.66];
@@ -74,6 +74,11 @@ for i = 1:numel(cfg.var_name_list)
                 plot(ax_1, cfg.times, left_erp{i}, 'color', color.r, 'linewidth', 2, 'LineStyle', '--');
             end
             plot(ax_1, cfg.times, right_erp{i}, 'color', color.b, 'linewidth', 2, 'LineStyle', '--');
+        case 3
+            if ~cfg.is_li
+                plot(ax_1, cfg.times, left_erp{i}, 'color', color.r, 'linewidth', 2, 'LineStyle', ':');
+            end
+            plot(ax_1, cfg.times, right_erp{i}, 'color', color.b, 'linewidth', 2, 'LineStyle', ':');
         otherwise
             error('Too many analysis types.');
     end
@@ -89,7 +94,7 @@ ax_1.LineWidth = 1;
 legend(ax_1, legend_list, 'Interpreter', 'none', 'Box', 'off');
 title(ax_1, ['Clusters: ', strjoin(cfg.left_cluster, '+'), '   ', strjoin(cfg.right_cluster, '+')]);
 
-if numel(cfg.var_name_list) == 2
+if numel(cfg.var_name_list) >= 2
     hold(ax_2, 'on');
     if ~cfg.is_li
         plot(ax_2, cfg.times, left_erp{2}-left_erp{1}, 'color', color.r, 'linewidth', 2);
@@ -118,12 +123,16 @@ topo_code = [...
 set(fig,'WindowButtonDownFcn', topo_code);
 topo_ax{1} = axes('units', 'normalized', 'position', [0.13 0.74 0.15 0.15]);
 colormap(topo_ax{1}, flip(othercolor('RdBu11', 100)));
-if numel(cfg.var_name_list) == 2
+if numel(cfg.var_name_list) >= 2
     topo_ax{2} = axes('units', 'normalized', 'position', [0.13 0.35 0.15 0.15]);
     colormap(topo_ax{2}, flip(othercolor('RdBu11', 100)));
 end
 
-dat.eeg = eeg;
+if numel(eeg) > 2
+    dat.eeg = eeg(1:2);
+else
+    dat.eeg = eeg;
+end
 dat.topo_ax = topo_ax;
 if ~cfg.is_li
     dat.chanlocs = cfg.chanlocs;
