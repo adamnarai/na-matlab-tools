@@ -1,5 +1,5 @@
 function add_parent_path(level, incl_sub)
-% ADD_RELPATH  Add parent path relative to caller's directory.
+% ADD_PARENT_PATH  Add parent path relative to caller's directory.
 %
 % INPUT:
 %           level = level of parentage (0 means current directory, 
