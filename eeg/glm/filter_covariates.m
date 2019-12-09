@@ -18,6 +18,7 @@ function [valid_trials, filter_stats] = filter_covariates(cfg, covariates)
 %       cfg.max_sacc_amp: max curr sacc amp in vis deg ([] means no max)
 %       cfg.min_sacc_amp: min curr sacc amp in vis deg ([] means no min)
 %       cfg.fix_pos_x_limit: limit X position [min max]
+%       cfg.only_valid_words: use fixations within word boundaries
 %
 % Adam Narai, RCNS HAS, 2019
 %
@@ -36,8 +37,6 @@ max_sacc_amp_idx = false(size(covariates,1),1);
 min_sacc_amp_idx = false(size(covariates,1),1);
 fix_pos_x_limit_idx = false(size(covariates,1),1);
 valid_words_idx = false(size(covariates,1),1);
-curr_sacc_is_gliss_idx = false(size(covariates,1),1);
-fix_rank_limits_idx = false(size(covariates,1),1);
 
 % Get model covariates
 model_cov = covariates(:, cfg.cov_names);
@@ -91,26 +90,12 @@ if cfg.only_valid_words
     valid_trials(valid_words_idx) = false;
 end
 
-% Limit curr sacc is gliss
-if ~isempty(cfg.curr_sacc_is_gliss)
-    curr_sacc_is_gliss_idx = covariates{:,'curr_sacc_is_gliss'} ~= cfg.curr_sacc_is_gliss;
-    valid_trials(curr_sacc_is_gliss_idx) = false;
-end
-
-% Limit fixation rank
-if ~isempty(cfg.fix_rank_limits)
-    fix_rank_limits_idx = (covariates{:,'fix_rank'} < cfg.fix_rank_limits(1)) |...
-        (covariates{:,'fix_rank'} > cfg.fix_rank_limits(2));
-    valid_trials(fix_rank_limits_idx) = false;
-end
-
 %% Generate filter stats
 % Reject table
 all_idx = ~valid_trials;
 filter_stats.reject_filter_tbl = table(nan_idx, curr_sacc_dir_idx,...
     next_sacc_dir_idx, max_sacc_amp_idx, min_sacc_amp_idx,...
-    fix_pos_x_limit_idx, valid_words_idx, curr_sacc_is_gliss_idx,...
-    fix_rank_limits_idx, all_idx);
+    fix_pos_x_limit_idx, valid_words_idx, all_idx);
 
 % Unique reject table (exclude last 'all_idx' variable)
 filter_stats.unique_reject_filter_tbl = table();
