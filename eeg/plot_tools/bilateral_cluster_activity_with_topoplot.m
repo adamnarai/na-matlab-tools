@@ -1,10 +1,15 @@
 function bilateral_cluster_activity_with_topoplot(cfg, eeg_data, chanlocs, times, right_cluster, topo_times)
 
 % Defaults
+if ~isfield(cfg, 'ax') || isempty(cfg.ax)
+    ax = axes();
+else
+    ax = cfg.ax;
+end
 if ~isfield(cfg, 'LI') || isempty(cfg.LI)
     cfg.LI = 0;
 end
-if ~isfield(cfg, 'title') || isempty(cfg.title)
+if ~isfield(cfg, 'title')
     cfg.title = '';
 end
 if ~isfield(cfg, 'save_path') || isempty(cfg.save_path)
@@ -13,10 +18,10 @@ end
 if ~isfield(cfg, 'figsize') || isempty(cfg.figsize)
     cfg.figsize = [600 500];
 end
-if ~isfield(cfg, 'xlabel') || isempty(cfg.xlabel)
+if ~isfield(cfg, 'xlabel')
     cfg.xlabel = 'Times (ms)';
 end
-if ~isfield(cfg, 'ylabel') || isempty(cfg.ylabel)
+if ~isfield(cfg, 'ylabel')
     cfg.ylabel = 'Amplitude (\muV/m^2)';
 end
 if ~isfield(cfg, 'trim')
@@ -45,11 +50,11 @@ erp_right = mean(eeg_data(cluster_idx_right,:),1);
 erp_left = mean(eeg_data(cluster_idx_left,:),1);
 
 % Create figure
-figure('Position', [100 100 cfg.figsize])
-set(gcf, 'units', 'normalized');
+% figure('Position', [100 100 cfg.figsize])
+% set(gcf, 'units', 'normalized');
 
 % Create axes
-ax = axes('Position', [0.12 0.1 0.8 0.5]);
+% ax = axes('Position', [0.12 0.1 0.8 0.5]);
 
 % Plot erp
 hold(ax, 'on');
@@ -71,7 +76,11 @@ xlabel(cfg.xlabel);
 ylabel(cfg.ylabel);
 box on
 ax.LineWidth = 1;
-saved_ylim = ax.YLim;
+if ~isfield(cfg, 'y_lim')
+    saved_ylim = ax.YLim;
+else
+    saved_ylim = cfg.y_lim;
+end
 text(ax, cfg.title_pos(1), cfg.title_pos(2), cfg.title, 'units', 'normalized', 'fontweight', 'bold', 'fontsize', 12);
 
 % Draw subplot connection lines
@@ -92,9 +101,10 @@ for i = 1:numel(topo_times)
 end
 
 % Topoplot
+ax_pos = get(ax, 'position');
 for i = 1:numel(topo_idx)
-    y_pos = 0.12 + (i-1)*0.8/numel(topo_idx) + (0.8/numel(topo_idx)-0.2)/2;
-    topo_ax = axes('Position', [y_pos 0.65 0.2 0.2]);
+    x_pos = ax_pos(1) - 0.09 + (i-0.5)*ax_pos(3)/numel(topo_idx);
+    topo_ax = axes('Position', [x_pos ax_pos(2)+ax_pos(4)*1.04 ax_pos(3)*0.45 ax_pos(3)*0.45]);
     topoplot(eeg_data(:,topo_idx(i)), chanlocs,...
         'style','map',...   % map, both
         'whitebk','on',...

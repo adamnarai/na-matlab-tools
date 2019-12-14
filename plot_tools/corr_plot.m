@@ -33,7 +33,7 @@ if ~isfield(cfg, 'gp_id')
 end
 
 % Create figure and axes
-fig = figure('position', [100 100 cfg.figsize]);
+% fig = figure('position', [100 100 cfg.figsize]);
 ax = axes();
 
 % Get axis limits
