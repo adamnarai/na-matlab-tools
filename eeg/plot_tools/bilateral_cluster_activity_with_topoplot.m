@@ -1,4 +1,29 @@
-function bilateral_cluster_activity_with_topoplot(cfg, eeg_data, chanlocs, times, right_cluster, topo_times)
+function ax = bilateral_cluster_activity_with_topoplot(cfg, eeg_data, chanlocs, times, right_cluster, topo_times)
+% BILATERAL_CLUSTER_ACTIVITY_WITH_TOPOPLOT  
+% Line plots of contralateral cluster average activity with topoplots.
+%          
+% INPUTS:
+%           cfg = config structure
+%           eeg_data = data matrix [ch x times]
+%           chanlocs = EEGLAB chanlocs structure
+%           times = times vector for eeg samples
+%           right_cluster = right channel cluster to use for line-plot
+%               (left cluster will be determined automatically)
+%           topo_times = list of times for topoplots
+% OUTPUTS:
+%           ax = axes handle for the plot
+%
+%   cfg fields (all optional):
+%       cfg.ax: axes handle
+%       cfg.LI: data is LI
+%       cfg.title: plot title
+%       cfg.xlabel: x axis label
+%       cfg.ylabel: y axis label
+%       cfg.trim: time (x axis) limits
+%       cfg.title_pos: title position (normalized)
+%
+% Adam Narai, RCNS HAS, 2019
+%
 
 % Defaults
 if ~isfield(cfg, 'ax') || isempty(cfg.ax)
@@ -11,12 +36,6 @@ if ~isfield(cfg, 'LI') || isempty(cfg.LI)
 end
 if ~isfield(cfg, 'title')
     cfg.title = '';
-end
-if ~isfield(cfg, 'save_path') || isempty(cfg.save_path)
-    cfg.save_path = '';
-end
-if ~isfield(cfg, 'figsize') || isempty(cfg.figsize)
-    cfg.figsize = [600 500];
 end
 if ~isfield(cfg, 'xlabel')
     cfg.xlabel = 'Times (ms)';
@@ -48,13 +67,6 @@ cluster_idx_left = locations.left(ismember(locations.right, cluster_idx_right));
 % Get cluster average erp
 erp_right = mean(eeg_data(cluster_idx_right,:),1);
 erp_left = mean(eeg_data(cluster_idx_left,:),1);
-
-% Create figure
-% figure('Position', [100 100 cfg.figsize])
-% set(gcf, 'units', 'normalized');
-
-% Create axes
-% ax = axes('Position', [0.12 0.1 0.8 0.5]);
 
 % Plot erp
 hold(ax, 'on');

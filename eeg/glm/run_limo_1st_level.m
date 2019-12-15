@@ -1,4 +1,14 @@
 function run_limo_1st_level(LIMO, Y)
+% RUN_LIMO_1ST_LEVEL  Running 1st level LIMO modeling.
+% Results are saved in LIMO.dir.
+%
+% INPUT:
+%           LIMO = LIMO parameter structure
+%           Y = data matrix for one subject [ch x times x trials]
+%
+% Adam Narai, RCNS HAS, 2019
+%
+
 create_dir(LIMO.dir);
 cd(LIMO.dir);
 

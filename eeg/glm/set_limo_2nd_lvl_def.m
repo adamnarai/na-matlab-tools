@@ -1,4 +1,6 @@
 function LIMO = set_limo_2nd_lvl_def(cfg)
+% Helper function for default LIMO 2nd level glm setup
+
 LIMO.data.data_dir            = 'not specified';
 LIMO.data.data                = 'not specified';
 LIMO.data.chanlocs            = cfg.chanlocs;
@@ -23,8 +25,4 @@ switch cfg.model
         LIMO.design.name        = 'one sample t-test all Channels';
     case 2
         LIMO.design.name        = 'two samples t-test all electrodes';
-    case 3
-        LIMO.design.name        = 'regression analysis';
-    case 5
-        LIMO.design.name        = 'paired t-test all Channels';
 end

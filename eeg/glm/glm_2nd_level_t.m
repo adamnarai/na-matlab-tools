@@ -1,4 +1,23 @@
 function glm_2nd_level_t(cfg, data)
+% GLM_2nd_LEVEL_T  Space-time domain 2nd level LIMO GLM.
+%
+% INPUT:
+%           cfg = config structure
+%           data = Betas matrix [ch x times x vars x subj] or 
+%               [ch x times x subj] for contrast
+%
+%   cfg fields:
+%       cfg.out_dir: full path of output directory
+%       cfg.model: 2nd level glm model (0: AVG, 1: One-sample T, 2: two-samples T)
+%       cfg.contrast: applied contrast (empty if none)
+%       cfg.gpcond: list of groups (integers)
+%       cfg.gpcond_name: group names (strings)
+%       cfg.covariates: variable indices to test (integers)
+%       cfg.var_names: variable names (strings)
+%
+% Adam Narai, RCNS HAS, 2019
+%
+
 switch cfg.model
     case 0 % Average
         for gpcond = cfg.gpcond

@@ -1,4 +1,5 @@
 function analysis_name = get_analysis_name(cfg)
+% Helper function for creating analysis name based on the statistical model
 
 switch cfg.model
     case 0
@@ -37,12 +38,4 @@ switch cfg.mode
     case 0  % Do nothing
     case 1
         analysis_name = [analysis_name, '_LI'];
-    case 2
-        analysis_name = [analysis_name, '_Lat'];
-end
-if ~isempty(cfg.baseline_mode)
-    analysis_name = [analysis_name, '_', cfg.baseline_mode];
-end
-if ~isempty(cfg.movmean_time) && cfg.movmean_time ~= 0
-    analysis_name = [analysis_name, '_movmean_', num2str(cfg.movmean_time), 'ms'];
 end

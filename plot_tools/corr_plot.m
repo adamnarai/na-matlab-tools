@@ -1,9 +1,34 @@
-%% Correlation function
 function ax = corr_plot(cfg, X, Y, outliers)
+% CORR_PLOT  Scatterplot with OLS line.
+%          
+% INPUTS:
+%           cfg = config structure
+%           X = X data
+%           Y = Y data
+%           outliers = outlier indices
+% OUTPUTS:
+%           ax = axes handle for the plot
+%
+%   cfg fields (all optional):
+%       cfg.ax: axes handle
+%       cfg.title: plot title
+%       cfg.label_list: point labels (strings)
+%       cfg.hline: horizontal zero line switch
+%       cfg.vline: vertical zero line switch
+%       cfg.lsline: OLS line switch
+%       cfg.gp_id: group id for data points (integers)
+%
+% Adam Narai, RCNS HAS, 2019
+%
 
 % Defaults
 if nargin < 4
     outliers = [];
+end
+if ~isfield(cfg, 'ax') || isempty(cfg.ax)
+    ax = axes();
+else
+    ax = cfg.ax;
 end
 if ~isfield(cfg, 'title')
     cfg.title = '';
@@ -13,17 +38,11 @@ if ~isfield(cfg, 'label_list')
 else
     label_list = cfg.label_list;
 end
-if ~isfield(cfg, 'save_path')
-    cfg.save_path = '';
-end
 if ~isfield(cfg, 'hline')
     cfg.hline = 0;
 end
 if ~isfield(cfg, 'vline')
     cfg.vline = 0;
-end
-if ~isfield(cfg, 'figsize')
-    cfg.figsize = [560 420];
 end
 if ~isfield(cfg, 'lsline')
     cfg.lsline = 1;
@@ -31,10 +50,6 @@ end
 if ~isfield(cfg, 'gp_id')
     cfg.gp_id = [];
 end
-
-% Create figure and axes
-% fig = figure('position', [100 100 cfg.figsize]);
-ax = axes();
 
 % Get axis limits
 x_margin = (max(X)-min(X))*0.05;
@@ -127,9 +142,4 @@ end
 % Axis limits
 xlim(x_lim);
 ylim(y_lim);
-
-% Save plot
-if ~isempty(cfg.save_path)
-    savefig(fig, strrep(cfg.save_path, char(10), ''));
-end
 end

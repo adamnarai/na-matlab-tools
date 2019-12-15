@@ -1,4 +1,17 @@
 function covariates = get_et_covariates(ET_results, stim, sacc, cons_sacc_num)
+% GET_ET_COVARIATES  Get features of consecutive ET events (sacc, fix).
+%
+% INPUTS:
+%           ET_results = Adaptive algorithm results
+%           stim = stimulus number
+%           sacc = saccade number within stimulus
+%           cons_sacc_num = number of consecutive saccades to use
+% OUTPUTS:
+%           covariates = table of ET event features
+%
+% Adam Narai, RCNS HAS, 2019
+%
+
 covariates = table();
 
 % Defaults
