@@ -18,6 +18,7 @@ function report_str = report_cluster_stats(M, mask, MCC, name, LIMO)
 %
 
 % Loop for clusters in time
+report_str = '';
 clusters = bwlabel(any(mask,1));
 for clust = unique(clusters(clusters > 0))
     clust_timevect = LIMO.data.timevect(clusters == clust);
@@ -35,14 +36,17 @@ for clust = unique(clusters(clusters > 0))
     % MCC specific report string
     switch MCC
         case 1 % None
-            report_str = [name, ' None ', num2str(clust), ': ', temp_str];
+            report_str = [report_str,...
+                name, ' None ', num2str(clust), ': ', temp_str];
         case 2 % 2D clustering
             clust_p_data = M(:,clusters == clust);
             clust_p = clust_p_data(find(~isnan(clust_p_data),1));
-            report_str = [name, ' Cluster ', num2str(clust), ': ', temp_str,...
+            report_str = [report_str,...
+                name, ' Cluster ', num2str(clust), ': ', temp_str,...
                 ' (p = ', num2str(clust_p), ')'];
         case 3  % TFCE
-            report_str = [name, ' TFCE ', num2str(clust), ': ', temp_str];
+            report_str = [report_str,...
+                name, ' TFCE ', num2str(clust), ': ', temp_str];
     end
     
     % Adding channel list
