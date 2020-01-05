@@ -30,7 +30,6 @@ switch cfg.model
         end
         create_dir(cfg.out_dir);
         save([cfg.out_dir, filesep, 'Y'], 'Y');
-        save([cfg.out_dir, filesep, 'chanlocs'], 'chanlocs');
     case 1 % One-sample T
         LIMO = set_limo_2nd_lvl_def(cfg);
         for gpcond = cfg.gpcond
