@@ -53,4 +53,4 @@ end
 function one_sample_t(LIMO, Yr, varNum)
 cd(LIMO.dir);
 save LIMO LIMO
-limo_random_robust_noquest(1, Yr, varNum, LIMO.design.bootstrap, LIMO.design.tfce);
+limo_random_robust(1, Yr, varNum, LIMO.design.bootstrap, LIMO.design.tfce);
