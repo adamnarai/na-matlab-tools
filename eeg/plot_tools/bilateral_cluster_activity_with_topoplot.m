@@ -117,7 +117,9 @@ ax_pos = get(ax, 'position');
 for i = 1:numel(topo_idx)
     x_pos = ax_pos(1) - 0.09 + (i-0.5)*ax_pos(3)/numel(topo_idx);
     topo_ax = axes('Position', [x_pos ax_pos(2)+ax_pos(4)*1.04 ax_pos(3)*0.45 ax_pos(3)*0.45]);
-    topoplot(eeg_data(:,topo_idx(i)), chanlocs,...
+    toplot = eeg_data(:,topo_idx(i));
+    toplot = toplot./max(abs(toplot));
+    topoplot(toplot, chanlocs,...
         'style','map',...   % map, both
         'whitebk','on',...
         'headrad',0.66,...
@@ -131,4 +133,6 @@ for i = 1:numel(topo_idx)
     annotation('line', [ann_plot_x ann_topo_x], [ann_plot_y ann_topo_y], 'linewidth', 1.2, 'color', 'k');
 end
 
-
+% Colorbar
+colorbar(topo_ax, 'Position',...
+    [ax_pos(1)+ax_pos(3)-0.002 ax_pos(2)+ax_pos(4)*1.07 0.006 ax_pos(3)*0.38]);
