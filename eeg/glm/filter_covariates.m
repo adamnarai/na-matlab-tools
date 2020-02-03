@@ -19,6 +19,9 @@ function [valid_trials, filter_stats] = filter_covariates(cfg, covariates)
 %       cfg.min_sacc_amp: min curr sacc amp in vis deg ([] means no min)
 %       cfg.fix_pos_x_limit: limit X position [min max]
 %       cfg.only_valid_words: use fixations within word boundaries
+%       cfg.fix_rank_limits: [lower upper] ([] means no use) limit fixation rank
+%           (like 1st, 2nd, 3rd... fixation on the same word)
+%           [1 1] -> only first fixations, [2 Inf] -> all other fixations
 %
 % Adam Narai, RCNS HAS, 2019
 %
@@ -88,6 +91,13 @@ end
 if cfg.only_valid_words
     valid_words_idx = covariates{:,'valid_word'} == 0;
     valid_trials(valid_words_idx) = false;
+end
+
+% Limit fixation rank
+if ~isempty(cfg.fix_rank_limits)
+    fix_rank_limits_idx = (covariates{:,'fix_rank'} < cfg.fix_rank_limits(1)) |...
+        (covariates{:,'fix_rank'} > cfg.fix_rank_limits(2));
+    valid_trials(fix_rank_limits_idx) = false;
 end
 
 %% Generate filter stats
