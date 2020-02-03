@@ -98,6 +98,7 @@ switch cfg.model
         LIMO.Level                    = 1;
         LIMO.Analysis                 = 'Time';
         
+        run_limo_1st_level(LIMO, Y);
     case 2   % REGROUT
         % Regression for e channels and t timepoints
         % Res = Y - covariate effects

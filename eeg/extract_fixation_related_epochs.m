@@ -85,9 +85,12 @@ for stim = 1:numel(segments)
         end
         
         % Get ET covariates related to current saccade end
+        warning off
         covariates = [covariates; get_et_covariates(ET_results, stim, sacc)];
         valid_sacc_end{size(covariates,1), 'eeg_trial'} = valid;
         stim_num{size(covariates,1), 'stim_num'} = stim;
+        stim_num{size(covariates,1), 'sacc_num'} = sacc;
+        warning on
     end
 end
 

@@ -93,7 +93,8 @@ if ~isfield(cfg, 'y_lim')
 else
     saved_ylim = cfg.y_lim;
 end
-text(ax, cfg.title_pos(1), cfg.title_pos(2), cfg.title, 'units', 'normalized', 'fontweight', 'bold', 'fontsize', 12);
+text(ax, cfg.title_pos(1), cfg.title_pos(2), cfg.title, 'units', 'normalized',...
+'interpreter', 'none', 'fontweight', 'bold', 'fontsize', 12);
 
 % Draw subplot connection lines
 for i = 1:numel(topo_times)
