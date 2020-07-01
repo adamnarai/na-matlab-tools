@@ -50,6 +50,9 @@ end
 if ~isfield(cfg, 'gp_id')
     cfg.gp_id = [];
 end
+if ~isfield(cfg, 'dot_size')
+    cfg.dot_size = 40;
+end
 
 % Get axis limits
 x_margin = (max(X)-min(X))*0.05;
@@ -70,12 +73,12 @@ end
 
 % Scatterplot
 if isempty(cfg.gp_id)
-    scatter(ax, X, Y, 40, 'k', 'filled');
+    scatter(ax, X, Y, cfg.dot_size, 'k', 'filled');
 else
     hold on
-    scatter(ax, X(gp_id == 1), Y(gp_id == 1), 40, [0 0.4470 0.7410], 'filled');
-    scatter(ax, X(gp_id == 2), Y(gp_id == 2), 40, [0.6350 0.0780 0.1840], 'filled');
-    scatter(ax, X(gp_id == 3), Y(gp_id == 3), 40, [0.4660 0.6740 0.1880], 'filled');
+    scatter(ax, X(gp_id == 1), Y(gp_id == 1), cfg.dot_size, [0 0.4470 0.7410], 'filled');
+    scatter(ax, X(gp_id == 2), Y(gp_id == 2), cfg.dot_size, [0.6350 0.0780 0.1840], 'filled');
+    scatter(ax, X(gp_id == 3), Y(gp_id == 3), cfg.dot_size, [0.4660 0.6740 0.1880], 'filled');
     hold off
 end
 
@@ -105,11 +108,11 @@ end
 % Plot outliers
 hold on
 if isempty(cfg.gp_id)
-    scatter(ax, X_outl, Y_outl, 40, 'k');
+    scatter(ax, X_outl, Y_outl, cfg.dot_size, 'k');
 else
-    scatter(ax, X_outl(gp_id_outl == 1), Y_outl(gp_id_outl == 1), 40, [0 0.4470 0.7410]);
-    scatter(ax, X_outl(gp_id_outl == 2), Y_outl(gp_id_outl == 2), 40, [0.6350 0.0780 0.1840]);
-    scatter(ax, X_outl(gp_id_outl == 3), Y_outl(gp_id_outl == 3), 40, [0.4660 0.6740 0.1880]);
+    scatter(ax, X_outl(gp_id_outl == 1), Y_outl(gp_id_outl == 1), cfg.dot_size, [0 0.4470 0.7410]);
+    scatter(ax, X_outl(gp_id_outl == 2), Y_outl(gp_id_outl == 2), cfg.dot_size, [0.6350 0.0780 0.1840]);
+    scatter(ax, X_outl(gp_id_outl == 3), Y_outl(gp_id_outl == 3), cfg.dot_size, [0.4660 0.6740 0.1880]);
 end
 hold off
 
