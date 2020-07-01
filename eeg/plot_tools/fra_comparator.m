@@ -20,7 +20,11 @@ chanlocs_li = cfg.chanlocs;
 chanlocs_li(locations.center) = [];
 
 % Get subject idx
-data_subj_idx = ismember(data.Properties.RowNames, cfg.subj_codes);
+if isempty(cfg.subj_codes)
+    data_subj_idx = 1:size(data,1);
+else
+    data_subj_idx = ismember(data.Properties.RowNames, cfg.subj_codes);
+end
 
 % Create figure
 fig = figure('Position', [100 100 1000 800], 'Name', cfg.fig_name);
