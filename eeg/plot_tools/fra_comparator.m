@@ -82,7 +82,11 @@ for i = 1:numel(cfg.var_name_list)
             error('Too many analysis types.');
     end
     hold(ax_1, 'off');
-    legend_list = {legend_list{:}, ['left  ', cfg.var_name_list{i}], ['right  ', cfg.var_name_list{i}]};
+    if ~cfg.is_li
+        legend_list = {legend_list{:}, ['left  ', cfg.var_name_list{i}], ['right  ', cfg.var_name_list{i}]};
+    else
+        legend_list = {legend_list{:}, ['right-left  ', cfg.var_name_list{i}]};
+    end
     xlim(ax_1, [cfg.times(1), cfg.times(end)]);
 end
 
