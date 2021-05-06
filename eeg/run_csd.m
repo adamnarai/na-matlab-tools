@@ -2,7 +2,7 @@ function EEG = run_csd(EEG, CSD_parameters, chanlocs, rm_ref)
 % RUN_CSD  Run CSD on EEGLAB data.
 %
 % INPUTS:
-%           EEG = channel labels in cell array
+%           EEG = channel labels in [N x 1] cell array
 %           CSD_parameters = structure of CSD parameters, especially the G
 %               and H matrices
 %           chanlocs = chanlocs file indluding the referenc ch at the end

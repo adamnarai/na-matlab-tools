@@ -20,7 +20,11 @@ chanlocs_li = cfg.chanlocs;
 chanlocs_li(locations.center) = [];
 
 % Get subject idx
-data_subj_idx = ismember(data.Properties.RowNames, cfg.subj_codes);
+if isempty(cfg.subj_codes)
+    data_subj_idx = 1:size(data,1);
+else
+    data_subj_idx = ismember(data.Properties.RowNames, cfg.subj_codes);
+end
 
 % Create figure
 fig = figure('Position', [100 100 1000 800], 'Name', cfg.fig_name);
@@ -78,7 +82,11 @@ for i = 1:numel(cfg.var_name_list)
             error('Too many analysis types.');
     end
     hold(ax_1, 'off');
-    legend_list = {legend_list{:}, ['left  ', cfg.var_name_list{i}], ['right  ', cfg.var_name_list{i}]};
+    if ~cfg.is_li
+        legend_list = {legend_list{:}, ['left  ', cfg.var_name_list{i}], ['right  ', cfg.var_name_list{i}]};
+    else
+        legend_list = {legend_list{:}, ['right-left  ', cfg.var_name_list{i}]};
+    end
     xlim(ax_1, [cfg.times(1), cfg.times(end)]);
 end
 
@@ -110,8 +118,8 @@ topo_code = [...
     'if numel(dat.eeg) == 2 clim = max(abs([dat.eeg{1}(:,idx);dat.eeg{2}(:,idx)])); end;',...
     'for i = 1:numel(dat.eeg)',...
     'axes(dat.topo_ax{i});',...
-    'topoplot(dat.eeg{i}(:,idx), dat.chanlocs,''style'',''map'',''whitebk'',''on'',''headrad'',0.66,''electrodes'',''off'',''emarker2'',{dat.ch_idx,''.'',''k'',14,1});',...
-    'title([num2str(round(time)), '' ms'']);',...
+    'topoplot(mean(dat.eeg{i}(:,idx-2:idx+2),2), dat.chanlocs,''style'',''map'',''whitebk'',''on'',''headrad'',0.66,''electrodes'',''off'',''emarker2'',{dat.ch_idx,''.'',''k'',14,1});',...
+    'title([num2str(round(time)), '' ms (10 ms mean)'']);',...
     'if numel(dat.eeg) == 2 caxis([-clim clim]); end;',...
     'end;'];
 
