@@ -38,4 +38,6 @@ switch cfg.mode
     case 0  % Do nothing
     case 1
         analysis_name = [analysis_name, '_LI'];
+    case 2
+        analysis_name = [analysis_name, '_LAT'];
 end

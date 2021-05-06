@@ -22,7 +22,7 @@ chanlocs = EEG.chanlocs;
 create_dir(cfg.out_dir);
 
 % Create chanlocs for lateralization
-if cfg.mode == 1
+if cfg.mode == 1 || cfg.mode == 2
     locations = pair_channels(chanlocs, 0.1);
     chanlocs([locations.center, locations.left]) = [];
 end
@@ -44,6 +44,9 @@ switch cfg.mode
         right_data = Y(locations.right,:,:);
         Y(locations.right,:,:) = (right_data - Y(locations.left,:,:))...
             ./(abs(right_data) + abs(Y(locations.left,:,:)));
+        Y([locations.center, locations.left],:,:) = [];
+    case 2      % LAT (lateralization)
+        Y(locations.right,:,:) = Y(locations.right,:,:) - Y(locations.left,:,:);
         Y([locations.center, locations.left],:,:) = [];
     otherwise
         error('Invalid mode number.');
