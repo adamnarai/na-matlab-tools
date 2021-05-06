@@ -50,6 +50,20 @@ switch cfg.model
                 save_p(cfg, LIMO.dir);
             end
         end
+    case 3  % paired T
+        LIMO = set_limo_2nd_lvl_def(cfg);
+        for gpcond = cfg.gpcond
+            if isempty(cfg.contrast)
+                Y{1} = squeeze(data{gpcond}(:,:,cfg.covariate_pair(1),:));
+                Y{2} = squeeze(data{gpcond}(:,:,cfg.covariate_pair(2),:));
+                LIMO.dir = [cfg.out_dir, filesep, cfg.gpcond_name{gpcond}, filesep, 'pair_', num2str(cfg.covariate_pair)];
+            else
+                error('No contrast paired t test implemented.');
+            end
+            create_dir(LIMO.dir);
+            paired_t(LIMO, Y{1}, Y{2}, 1);
+            save_p(cfg, LIMO.dir);
+        end
     otherwise
         error('Invalid model number');
 end
@@ -58,3 +72,8 @@ function one_sample_t(LIMO, Yr, varNum)
 cd(LIMO.dir);
 save LIMO LIMO
 limo_random_robust(1, Yr, varNum, LIMO.design.bootstrap, LIMO.design.tfce);
+
+function paired_t(LIMO, Y1, Y2, varNum)
+cd(LIMO.dir);
+save LIMO LIMO
+limo_random_robust(3, Y1, Y2, varNum, LIMO.design.bootstrap, LIMO.design.tfce);

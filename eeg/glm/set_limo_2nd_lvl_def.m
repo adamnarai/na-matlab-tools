@@ -25,4 +25,6 @@ switch cfg.model
         LIMO.design.name        = 'one sample t-test all Channels';
     case 2
         LIMO.design.name        = 'two samples t-test all electrodes';
+    case 3
+        LIMO.design.name        = 'paired t-test all electrodes';
 end
