@@ -33,6 +33,10 @@ switch cfg.model
         else
             error('What kind of analysis is this?');
         end
+    case -1
+        analysis_name = 'AVGABSLAT_t';
+    case -2
+        analysis_name = 'AVGABSLI_t';
 end
 switch cfg.mode
     case 0  % Do nothing

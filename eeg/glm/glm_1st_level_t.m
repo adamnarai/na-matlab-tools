@@ -22,7 +22,7 @@ chanlocs = EEG.chanlocs;
 create_dir(cfg.out_dir);
 
 % Create chanlocs for lateralization
-if cfg.mode == 1 || cfg.mode == 2
+if cfg.mode == 1 || cfg.mode == 2 || cfg.model == -1 || cfg.model == -2
     locations = pair_channels(chanlocs, 0.1);
     chanlocs([locations.center, locations.left]) = [];
 end
@@ -56,6 +56,7 @@ end
 switch cfg.model
     case 0   % AVG
         if ~isempty(Cat)
+            Betas = [];
             for cond = unique(Cat)'
                 Betas(:,:,cond) = mean(Y(:,:,Cat == cond), 3);
             end
@@ -133,6 +134,64 @@ switch cfg.model
         LIMO.Type                     = 'Channels';
         LIMO.Level                    = 1;
         LIMO.Analysis                 = 'Time, manual regr out';
+        save([cfg.out_dir, filesep, 'LIMO.mat'], 'LIMO');
+    case -1   % AVGABSLAT
+        if ~isempty(Cat)
+            for cond = unique(Cat)'
+                cond_mean = mean(Y(:,:,Cat == cond), 3);
+                cond_mean(locations.right,:) = abs(cond_mean(locations.right,:)) - abs(cond_mean(locations.left,:));
+                cond_mean([locations.center, locations.left],:) = [];
+                Betas(:,:,cond) = cond_mean;
+            end
+        else
+            Betas = mean(Y, 3);
+            Betas(locations.right,:) = abs(Betas(locations.right,:)) - abs(Betas(locations.left,:));
+            Betas([locations.center, locations.left],:) = [];
+        end
+        save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
+        
+        % Save params in LIMO struct for 2nd level
+        LIMO.data.chanlocs            = chanlocs;
+        LIMO.data.sampling_rate       = EEG.srate;
+        LIMO.data.timevect            = EEG.times;
+        LIMO.data.trim1               = 1;
+        LIMO.data.trim2               = length(EEG.times);
+        LIMO.data.start               = EEG.times(1);
+        LIMO.data.end                 = EEG.times(end);
+        LIMO.dir                      = cfg.out_dir;
+        LIMO.Type                     = 'Channels';
+        LIMO.Level                    = 1;
+        LIMO.Analysis                 = 'Time average';
+        save([cfg.out_dir, filesep, 'LIMO.mat'], 'LIMO');
+    case -2   % AVGABSLI
+        if ~isempty(Cat)
+            for cond = unique(Cat)'
+                cond_mean = mean(Y(:,:,Cat == cond), 3);
+                cond_mean(locations.right,:) = (abs(cond_mean(locations.right,:)) - abs(cond_mean(locations.left,:)))...
+                    ./ (abs(cond_mean(locations.right,:)) + abs(cond_mean(locations.left,:)));
+                cond_mean([locations.center, locations.left],:) = [];
+                Betas(:,:,cond) = cond_mean;
+            end
+        else
+            Betas = mean(Y, 3);
+            Betas(locations.right,:) = (abs(Betas(locations.right,:)) - abs(Betas(locations.left,:)))...
+                ./ (abs(Betas(locations.right,:)) + abs(Betas(locations.left,:)));
+            Betas([locations.center, locations.left],:) = [];
+        end
+        save([cfg.out_dir, filesep, 'Betas.mat'], 'Betas');
+        
+        % Save params in LIMO struct for 2nd level
+        LIMO.data.chanlocs            = chanlocs;
+        LIMO.data.sampling_rate       = EEG.srate;
+        LIMO.data.timevect            = EEG.times;
+        LIMO.data.trim1               = 1;
+        LIMO.data.trim2               = length(EEG.times);
+        LIMO.data.start               = EEG.times(1);
+        LIMO.data.end                 = EEG.times(end);
+        LIMO.dir                      = cfg.out_dir;
+        LIMO.Type                     = 'Channels';
+        LIMO.Level                    = 1;
+        LIMO.Analysis                 = 'Time average';
         save([cfg.out_dir, filesep, 'LIMO.mat'], 'LIMO');
     otherwise
         error('Invalid model number');
